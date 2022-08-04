@@ -1,0 +1,72 @@
+# To use this workflow, you will need to complete the following set-up steps:
+#
+# Create an ECR repository to store your images.
+#    For example: `aws ecr create-repository --repository-name my-ecr-repo --region us-east-2`.
+#    Replace the value of the `ECR_REPOSITORY` environment variable in the workflow below with your repository's name.
+#    Replace the value of the `AWS_REGION` environment variable in the workflow below with your repository's region.
+
+name: Build & Push Docker Image to Amazon ECR using AWS OIDC IAM Role
+
+on:
+  push:
+    branches:
+      - "<branch-name>"                    #provide list of branches for which workflow should be invoked
+
+env:
+  AWS_REGION: <aws-region>                 # set this to your preferred AWS region, e.g. us-west-1
+  ECR_REPOSITORY: <ecr-repo-name>          # set this to your Amazon ECR repository name
+
+permissions:
+  contents: read
+  id-token: write
+
+jobs:
+  deploy:
+    name: Deploy
+    runs-on: ubuntu-latest
+    environment: dev
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v3
+    
+    - name: Inject slug/short variables
+      uses: rlespinasse/github-slug-action@v3.x
+
+    - name: Configure AWS credentials
+      id: aws-configure
+      run: |
+        export AWS_ROLE_ARN= <aws-oidc-connect-iam-role>   # set this to ARN of AWS OIDC Connect IAM Role which is deployed by AWS OIDC Terraform
+        export AWS_WEB_IDENTITY_TOKEN_FILE=/tmp/awscreds
+        export AWS_DEFAULT_REGION=<aws-region>                 # set this to your preferred AWS region, e.g. us-west-1
+        echo AWS_WEB_IDENTITY_TOKEN_FILE=$AWS_WEB_IDENTITY_TOKEN_FILE >> $GITHUB_ENV
+        echo AWS_ROLE_ARN=$AWS_ROLE_ARN >> $GITHUB_ENV
+        echo AWS_DEFAULT_REGION=$AWS_DEFAULT_REGION >> $GITHUB_ENV
+        curl -H "Authorization: bearer $ACTIONS_ID_TOKEN_REQUEST_TOKEN" "$ACTIONS_ID_TOKEN_REQUEST_URL" | jq -r '.value' > $AWS_WEB_IDENTITY_TOKEN_FILE
+    
+    - name: Retrieve Secrets
+      id: secrets
+      uses: t-botz/aws-secrets-manager-read-action@v2
+      with:
+        secret-id: <aws-secret-id>                 # set this to your AWS Secret-Id where you stored github access token
+        mask-values: true
+        keys-as-env-vars: true
+        keys-as-outputs: true
+        append-to-env-file: ./my.env
+       
+    - name: Login to Amazon ECR
+      id: login-ecr
+      uses: aws-actions/amazon-ecr-login@v1
+
+    - name: Build, tag, and push image to Amazon ECR
+      id: build-image
+      env:
+        ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+        IMAGE_TAG: ${{ env.GITHUB_REF_SLUG }}.${{ env.GITHUB_SHA_SHORT }}
+        GH_ACCESSTOKEN_SECRET: ${{ steps.secrets.outputs.gh_token }}
+
+      run: |
+        # Build a docker container and push it to ECR so that it can be deployed to ECS.
+        docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG --build-arg GH_ACCESSTOKEN_DOCKER=$GH_ACCESSTOKEN_SECRET . 
+        docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
+        echo "::set-output name=image::$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG"
