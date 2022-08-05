@@ -23,6 +23,10 @@ on:
         required: true
         type: string  
 
+env:
+  AWS_DEFAULT_REGION: $AWS_REGION             
+  AWS_ROLE_ARN: $ROLE_ARN
+
 permissions:
   contents: read
   id-token: write
@@ -42,7 +46,7 @@ jobs:
     - name: Configure AWS credentials
       id: aws-configure
       run: |
-        export AWS_ROLE_ARN= $ROLE_ARN
+        export AWS_ROLE_ARN=$ROLE_ARN
         export AWS_WEB_IDENTITY_TOKEN_FILE=/tmp/awscreds
         export AWS_DEFAULT_REGION=$AWS_REGION 
         echo AWS_WEB_IDENTITY_TOKEN_FILE=$AWS_WEB_IDENTITY_TOKEN_FILE >> $GITHUB_ENV
