@@ -23,6 +23,12 @@ on:
         required: true
         type: string  
 
+env:
+  AWS_REGION: $AWS_REGION
+  ECR_REPOSITORY: $ECR_REPOSITORY      
+  ROLE_ARN: $ROLE_ARN
+  SECRET_ID: $SECRET_ID
+
 permissions:
   contents: read
   id-token: write
