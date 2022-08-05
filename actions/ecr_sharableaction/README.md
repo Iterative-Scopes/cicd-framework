@@ -1,0 +1,1 @@
+This sharable action will use OpenID Connect to establish connection to AWS with temp credentials and push docker image to ECR.
