@@ -42,8 +42,8 @@ jobs:
     - name: Configure AWS credentials
       id: aws-configure
       env:
-        AWS_ROLE_ARN: ${{ ROLE_ARN }}
-        AWS_DEFAULT_REGION: ${{ AWS_REGION }}
+        AWS_ROLE_ARN: $ROLE_ARN
+        AWS_DEFAULT_REGION: $AWS_REGION
       
       run: |
         export AWS_WEB_IDENTITY_TOKEN_FILE=/tmp/awscreds
