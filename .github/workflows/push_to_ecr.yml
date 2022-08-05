@@ -23,12 +23,6 @@ on:
         required: true
         type: string  
 
-env:
-  AWS_REGION: $AWS_REGION
-  ECR_REPOSITORY: $ECR_REPOSITORY      
-  ROLE_ARN: $ROLE_ARN
-  SECRET_ID: $SECRET_ID
-
 permissions:
   contents: read
   id-token: write
@@ -47,15 +41,13 @@ jobs:
 
     - name: Configure AWS credentials
       id: aws-configure
-      env:
-        AWS_ROLE_ARN: $ROLE_ARN
-        AWS_DEFAULT_REGION: $AWS_REGION
       
       run: |
         export AWS_WEB_IDENTITY_TOKEN_FILE=/tmp/awscreds
         echo AWS_WEB_IDENTITY_TOKEN_FILE=$AWS_WEB_IDENTITY_TOKEN_FILE >> $GITHUB_ENV
-        echo AWS_ROLE_ARN=$AWS_ROLE_ARN >> $GITHUB_ENV
-        echo AWS_DEFAULT_REGION=$AWS_DEFAULT_REGION >> $GITHUB_ENV
+        echo AWS_ROLE_ARN=$ROLE_ARN >> $GITHUB_ENV
+        echo AWS_DEFAULT_REGION=$AWS_REGION >> $GITHUB_ENV
+        echo AWS_REGION=$AWS_REGION >> $GITHUB_ENV
         curl -H "Authorization: bearer $ACTIONS_ID_TOKEN_REQUEST_TOKEN" "$ACTIONS_ID_TOKEN_REQUEST_URL" | jq -r '.value' > $AWS_WEB_IDENTITY_TOKEN_FILE
     
     - name: Retrieve Secrets
