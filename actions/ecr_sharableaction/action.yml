@@ -32,10 +32,12 @@ jobs:
     name: Deploy
     runs-on: ubuntu-latest
 
-    steps:
+    steps: 
+    - name: Checkout
+      uses: actions/checkout@v3
+      
     - name: Configure AWS credentials
       id: aws-configure
-      
       run: |
         export AWS_ROLE_ARN=${{inputs.ROLE_ARN}}
         export AWS_WEB_IDENTITY_TOKEN_FILE=/tmp/awscreds
