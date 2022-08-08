@@ -1,38 +1,19 @@
-# To use this workflow, you will need to complete the following set-up steps:
-#
-# Create an ECR repository to store your images.
-#    For example: `aws ecr create-repository --repository-name my-ecr-repo --region us-east-2`.
-#    Replace the value of the `ECR_REPOSITORY` environment variable in the workflow below with your repository's name.
-#    Replace the value of the `AWS_REGION` environment variable in the workflow below with your repository's region.
+name: Setup AWS OIDC IAM Role via sharableaction
 
-name: Setup AWS OIDC IAM Role
+inputs:
+  AWS_REGION:
+    required: true
+    type: string
+  ROLE_ARN:
+    required: true
+    type: string
+  SECRET_ID:
+    required: true
+    type: string
 
-on:
-  workflow_call:
-    inputs:
-      AWS_REGION:
-        required: true
-        type: string
-      ROLE_ARN:
-        required: true
-        type: string
-      SECRET_ID:
-        required: true
-        type: string  
-
-env:
-  AWS_REGION: ${{inputs.AWS_REGION}}        
-
-permissions:
-  contents: read
-  id-token: write
-
-jobs:
-  deploy:
-    name: Deploy
-    runs-on: ubuntu-latest
-
-    steps: 
+runs:
+  using: "composite"
+  steps:
     - name: Checkout
       uses: actions/checkout@v3
       
