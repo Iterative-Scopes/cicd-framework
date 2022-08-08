@@ -1,0 +1,11 @@
+ARG PYTHON_VERSION
+FROM public.ecr.aws/lambda/python:${PYTHON_VERSION}
+
+ARG PACKAGE_DIST
+
+COPY src/app/app.py ${LAMBDA_TASK_ROOT}
+COPY dist/${PKG_DIST} .
+RUN pip install ${PACKAGE_DIST}
+
+
+CMD [ "app.lambda_handler" ]
