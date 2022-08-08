@@ -1,20 +1,20 @@
 name: Running make file 
 description: "build, test, lint and codecoverage reports of the application"
 
-# runs:
-#   using: "composite"
-steps:
-  - name: Create virtual env
-    run: make venv   
-  - name: Install dependencies
-    run: make install  
-  - name: Build HelloWorld
-    run: make build     
-  - name: Linting
-    run: make lint
-  - name: Testing 
-    run: make test  
-  - name: Coverage Reports 
-    run: make coverage 
-  - name : Cleanup
-    run: make clean     
+runs:
+  using: "composite"
+  steps:
+    - name: Create virtual env
+      run: make venv   
+    - name: Install dependencies
+      run: make install  
+    - name: Build Python package
+      run: make build     
+    - name: Linting
+      run: make lint
+    - name: Testing 
+      run: make test  
+    - name: Coverage Reports 
+      run: make coverage 
+    - name: Cleanup
+      run: make clean     
