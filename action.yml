@@ -35,7 +35,6 @@ runs:
       uses: t-botz/aws-secrets-manager-read-action@v2
       with:
         secret-id: ${{inputs.SECRET_ID}}
-        mask-values: true
         keys-as-env-vars: true
         keys-as-outputs: true
         append-to-env-file: ./my.env       
