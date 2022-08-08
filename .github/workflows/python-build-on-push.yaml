@@ -9,10 +9,6 @@ on:
       python_version:
         required: true
         type: string 
-  push:
-    branches:
-      - '*'
-      - '!main'
 
 jobs:
   build:
