@@ -5,15 +5,12 @@
 #    Replace the value of the `ECR_REPOSITORY` environment variable in the workflow below with your repository's name.
 #    Replace the value of the `AWS_REGION` environment variable in the workflow below with your repository's region.
 
-name: Build & Push Docker Image to Amazon ECR using AWS OIDC IAM Role
+name: Setup AWS OIDC IAM Role
 
 on:
   workflow_call:
     inputs:
       AWS_REGION:
-        required: true
-        type: string
-      ECR_REPOSITORY:
         required: true
         type: string
       ROLE_ARN:
@@ -24,8 +21,7 @@ on:
         type: string  
 
 env:
-  AWS_REGION: ${{inputs.AWS_REGION}}      
-  ECR_REPOSITORY: ${{inputs.ECR_REPOSITORY}}  
+  AWS_REGION: ${{inputs.AWS_REGION}}        
 
 permissions:
   contents: read
@@ -37,12 +33,6 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Checkout
-      uses: actions/checkout@v3
-    
-    - name: Inject slug/short variables
-      uses: rlespinasse/github-slug-action@v3.x
-
     - name: Configure AWS credentials
       id: aws-configure
       
@@ -64,21 +54,4 @@ jobs:
         mask-values: true
         keys-as-env-vars: true
         keys-as-outputs: true
-        append-to-env-file: ./my.env
-       
-    - name: Login to Amazon ECR
-      id: login-ecr
-      uses: aws-actions/amazon-ecr-login@v1
-
-    - name: Build, tag, and push image to Amazon ECR
-      id: build-image
-      env:
-        ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
-        IMAGE_TAG: ${{ env.GITHUB_REF_SLUG }}.${{ env.GITHUB_SHA_SHORT }}
-        GH_ACCESSTOKEN_SECRET: ${{ steps.secrets.outputs.gh_token }}
-
-      run: |
-        # Build a docker container and push it to ECR so that it can be deployed to ECS.
-        docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG --build-arg GH_ACCESSTOKEN_DOCKER=$GH_ACCESSTOKEN_SECRET . 
-        docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
-        echo "::set-output name=image::$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG"
+        append-to-env-file: ./my.env       
