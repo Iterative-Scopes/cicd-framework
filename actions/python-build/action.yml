@@ -12,9 +12,9 @@ runs:
     - name: Install dependencies
       shell: bash
       run: make install  
-#   - name: Build Python package
-      # shell: bash
-#     run: make build   
+    - name: Build Python package
+      shell: bash
+      run: make build   
 #   - name: Linting
       # shell: bash
 #     run: make lint
