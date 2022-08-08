@@ -12,6 +12,8 @@ inputs:
     type: string
 
 runs:
+  using: "composite"
+  shell: bash
   steps:
     - name: Checkout
       uses: actions/checkout@v3
