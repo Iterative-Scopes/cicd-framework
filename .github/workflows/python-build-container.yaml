@@ -1,19 +1,15 @@
-name: build on work branch
+name: python build and publish container artifact
 
 on:
   workflow_call:
     inputs:
-      container:
-        required: true
-        type: boolean
       python_version:
         required: true
-        type: string 
+        type: string
 
 jobs:
   build:
     runs-on: ubuntu-latest
-
     steps: 
       - name: Checkout
         uses: actions/checkout@v3
@@ -29,10 +25,11 @@ jobs:
         run: make test
       - name: Build python package
         run: make build 
-      - name: Build lambda container 
+      - name: Build container 
         run: make container
-        if: ${{ inputs.container }}
-      - name: Test Lambda container 
+      - name: Test container 
         run: make test-container
-        if: ${{ inputs.container }}
+      - name: publish container
+        run: echo "use sharable publish"
+
 
