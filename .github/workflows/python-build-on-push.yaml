@@ -5,7 +5,7 @@ on:
     inputs:
       container:
         required: true
-        type: Boolean
+        type: boolean
       python_version:
         required: true
         type: string 
