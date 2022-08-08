@@ -1,0 +1,42 @@
+name: build on work branch
+
+on:
+  workflow_call:
+    inputs:
+      container:
+        required: true
+        type: Boolean
+      python_version:
+        required: true
+        type: string 
+  push:
+    branches:
+      - '*'
+      - '!main'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps: 
+      - name: Checkout
+        uses: actions/checkout@v3
+      - name: Set up Python ${{ inputs.python_version }}
+        uses: actions/setup-python@v4
+        with:
+          python-version: ${{ inputs.python_version }}
+      - name: Create virtual env
+        run: make venv 
+      - name: Lint
+        run: make lint
+      - name: Testing 
+        run: make test
+      - name: Build python package
+        run: make build 
+      - name: Build lambda container 
+        run: make container
+        if: ${{ inputs.container }}
+      - name: Test Lambda container 
+        run: make test-container
+        if: ${{ inputs.container }}
+
