@@ -2,8 +2,7 @@ name: Running make file
 description: "build, test, lint and codecoverage reports of the application"
 
 runs:
-  #using: "composite"
-  using: "ubuntu-latest"
+  using: "composite"
   steps:
     - name: Checkout
       uses: actions/checkout@v3
