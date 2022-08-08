@@ -9,15 +9,18 @@ runs:
     - name: Create virtual env
       shell: bash
       run: make venv   
-#   - name: Install dependencies
-#     run: make install  
+    - name: Install dependencies
+      shell: bash
+      run: make install  
 #   - name: Build Python package
-#     run: make build     
+      # shell: bash
+#     run: make build   
 #   - name: Linting
+      # shell: bash
 #     run: make lint
 #   - name: Testing 
+      # shell: bash
 #     run: make test  
 #   - name: Coverage Reports 
-#     run: make coverage 
-#   - name: Cleanup
-#     run: make clean     
+      # shell: bash
+#     run: make coverage   
