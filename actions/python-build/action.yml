@@ -15,12 +15,12 @@ runs:
     - name: Build Python package
       shell: bash
       run: make build   
-#   - name: Linting
-      # shell: bash
-#     run: make lint
-#   - name: Testing 
-      # shell: bash
-#     run: make test  
-#   - name: Coverage Reports 
-      # shell: bash
-#     run: make coverage   
+    - name: Linting
+      shell: bash
+      run: make lint
+    - name: Testing 
+      shell: bash
+      run: make test  
+    - name: Coverage Reports 
+      shell: bash
+      run: make coverage   
