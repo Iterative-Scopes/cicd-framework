@@ -28,6 +28,7 @@ runs:
           ROLE_ARN: arn:aws:iam::${{ inputs.aws_account }}:role/${{ inputs.aws_role }}
     
       - name: Login to Amazon ECR
+        id: login-ecr
         uses: aws-actions/amazon-ecr-login@v1
         env: 
           AWS_REGION: ${{ inputs.aws_region }}
@@ -38,7 +39,6 @@ runs:
           IMAGE_TAG: ${{ github.ref_name }}
         shell: bash
         run: |
-          make build
           make ${{ inputs.make_cmd }} remotereg="$REMOTE_REGISTRY" tag="$IMAGE_TAG"
           make test-${{ inputs.make_cmd }}
           docker push $REMOTE_REGISTRY:$IMAGE_TAG
