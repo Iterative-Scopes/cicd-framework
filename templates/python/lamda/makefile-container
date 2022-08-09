@@ -1,0 +1,56 @@
+PYTHON_VERSION = 3.9
+VENV = .py$(PYTHON_VERSION)
+PYTHON = python3
+BIN = $(VENV)/bin
+PACKAGE_NAME = YOUR-PROJECT-NAME
+PACKAGE_DIST = $(shell find dist -type f -execdir basename '{}' ';')
+
+help: ## show commands
+help:
+	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | sort | awk 'BEGIN {FS = ":.*?## "}; {printf "\033[36m%-30s\033[0m %s\n", $$1, $$2}'
+
+venv: ## setup virtual enviroment and install depedencies
+venv: setup.py
+	$(PYTHON) -m venv $(VENV)
+	$(BIN)/python --version
+# install runtime and development requirments
+	$(BIN)/pip install -e .[dev]
+
+build: ## create a release
+build: setup.py
+	$(BIN)/python setup.py sdist
+
+
+lint: ## check code style and security 
+lint:
+	@echo "code linting..."
+	$(BIN)/flake8
+	@echo "completed"
+
+test: ## run unit testing
+test:
+	@echo "test"
+	$(BIN)/tox
+
+container: ## build container image 
+container: dockerfile ./dist/$(PACKAGE_NAME)-*.tar.gz
+	@echo "build dockeer container image..."
+	docker build --build-arg PYTHON_VERSION=$(PYTHON_VERSION) \
+				 --build-arg PACKAGE_DIST=$(PACKAGE_DIST) \
+				 -t $(PACKAGE_NAME) .
+
+test-container: ## test lambda container
+test-container: 
+	docker run --rm -d -p 9000:8080 --name=$(PACKAGE_NAME) $(PACKAGE_NAME):latest
+	curl -XPOST "http://localhost:9000/2015-03-31/functions/function/invocations" -d '{"test":"hello"}'
+	@echo
+	docker stop $(PACKAGE_NAME)
+
+clean: ##clean venv and cached files
+clean: 
+	rm -rf dist
+	rm -rf .pytest_cache
+	rm -rf .tox
+	rm -rf src/*.egg*
+	find . -type f -name *.pyc -delete
+	find . -type d -name __pycache__ -delete
