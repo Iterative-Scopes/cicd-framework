@@ -1,0 +1,28 @@
+name: python build and publish container artifact
+
+on:
+  workflow_call:
+    inputs:
+      python_version:
+        required: true
+        type: string
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps: 
+      - name: Checkout
+        uses: actions/checkout@v3
+     #Using resuable action from cicd-framework repo 
+      - name: python-build-test  
+        uses:  Iterative-Scopes/cicd-framework/actions/python-build@main
+        with:
+          python_version: ${{ inputs.python_version }}
+      - name: Build container 
+        run: make container
+      - name: Test container 
+        run: make test-container
+      - name: publish container
+        run: echo "use sharable publish"
+
+
