@@ -13,9 +13,9 @@ runs:
     - name: Create virtual env
       shell: bash
       run: make venv   
-    - name: Install dependencies
-      shell: bash
-      run: make install    
+    # - name: Install dependencies
+    #   shell: bash
+    #   run: make install    
     - name: Linting
       shell: bash
       run: make lint
@@ -25,7 +25,7 @@ runs:
     - name: Build Python package
       shell: bash
       run: make build    
-    - name: Coverage Reports 
-      shell: bash
-      run: make coverage 
+    # - name: Coverage Reports 
+    #   shell: bash
+    #   run: make coverage 
          
