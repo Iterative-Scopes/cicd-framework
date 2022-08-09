@@ -1,0 +1,43 @@
+name: 'Push to ECR'
+description: 'Combines various steps to push to ECR'
+  
+inputs:
+  aws_region: 
+    decription: "The AWS region"
+    required: true
+
+  aws_access_key_id: 
+    decription: "The AWS Access Key"
+    required: true
+
+  aws_secret_access_key: 
+    decription: "The AWS Secret Key"
+    required: true
+
+  ecr_repository: 
+    decription: "The name of the repository to push to"
+    required: true
+
+  # container_name: 
+  #   description: "The name of the container"
+  #   required: true
+    
+
+  runs:
+    using: "composite"
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Login to Amazon ECR
+        id: login_to_ecr
+        uses: aws-actions/amazon-ecr-login@v1
+
+      - name: Push image to Amazon ECR
+        id: Push-image
+        run:
+          # Retag this as the latest
+          docker tag $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG $ECR_REGISTRY/$ECR_REPOSITORY:latest
+          docker push $ECR_REGISTRY/$ECR_REPOSITORY:latest
+          echo "::set-output name=image::$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG"
+
