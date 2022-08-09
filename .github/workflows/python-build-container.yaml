@@ -4,6 +4,23 @@ on:
   workflow_call:
     inputs:
       python_version:
+        description: python version
+        required: true
+        type: string
+      aws_account:
+        description: aws account
+        required: true
+        type: string
+      aws_role:
+        description: aws role
+        required: true
+        type: string
+      aws_region:
+        description: aws region
+        required: true
+        type: string
+      ecr_repository:
+        description: ecr repository
         required: true
         type: string
 
@@ -13,16 +30,17 @@ jobs:
     steps: 
       - name: Checkout
         uses: actions/checkout@v3
-     #Using resuable action from cicd-framework repo 
+      # use ci/cd framework action python-build
       - name: python-build-test  
         uses:  Iterative-Scopes/cicd-framework/actions/python-build@main
         with:
           python_version: ${{ inputs.python_version }}
-      - name: Build container 
-        run: make container
-      - name: Test container 
-        run: make test-container
-      - name: publish container
-        run: echo "use sharable publish"
-
+      # use ci/cd framework action build-ecr-image
+      - name: Build, tag, and push image to Amazon ECR
+        uses: Iterative-Scopes/cicd-framework/actions/build-ecr-image@ISOPS-501-dev-push
+        with:
+          aws_account: ${{ inputs.aws_account }}
+          aws_role: ${{ inputs.aws_role }}
+          aws_region: ${{ inputs.aws_region }}
+          ecr_repository: ${{ inputs.ecr_repository }}
 

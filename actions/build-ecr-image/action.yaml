@@ -18,6 +18,7 @@ inputs:
     description: make command
     default: container
     required: true
+
 runs:
     using: "composite"
     steps: 
