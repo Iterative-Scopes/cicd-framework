@@ -17,7 +17,7 @@ jobs:
       - name: python-build-test  
         uses:  Iterative-Scopes/cicd-framework/actions/python-build@ISOPS-505
         with:
-          python_version: ${{ inputs.python_version }
+          python_version: ${{ inputs.python_version }}
 
 #       - name: Set up Python ${{ inputs.python_version }}
 #         uses: actions/setup-python@v4
