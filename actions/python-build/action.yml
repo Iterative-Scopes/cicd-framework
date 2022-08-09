@@ -12,19 +12,16 @@ runs:
         python-version: ${{ inputs.python_version }}  
     - name: Create virtual env
       shell: bash
-      run: make venv   
-    - name: Install dependencies
-      shell: bash
-      run: make install  
-    - name: Build Python package
-      shell: bash
-      run: make build   
+      run: make venv      
     - name: Linting
       shell: bash
       run: make lint
     - name: Testing 
       shell: bash
-      run: make test  
+      run: make test 
+    - name: Build python package
+      shell: bash
+      run: make build         
     - name: Coverage Reports 
       shell: bash
       run: make coverage   
