@@ -16,3 +16,5 @@ jobs:
       #Uses resuable action cicd-framework repo 
       - name: python-build-test  
         uses:  Iterative-Scopes/cicd-framework/actions/python-build@ISOPS-505
+        with:
+          python_version: 3.9
