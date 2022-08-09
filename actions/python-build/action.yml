@@ -23,6 +23,9 @@ runs:
     - name: Create virtual env
       shell: bash
       run: make venv
+    - name: Install dependencies
+      shell: bash
+      run: make install
     # Check source code for programmatic and stylistic errors
     - name: Linting
       shell: bash
