@@ -1,3 +1,6 @@
+# This file is the sharable action with build,unittest, integration test, coverage reports test.
+# This sharable action can be used across applications by rferring this action the workflow. 
+
 name: Running make file 
 description: "build, test, lint and codecoverage reports of the application"
 
@@ -11,29 +14,31 @@ runs:
   steps:
     - name: Checkout
       uses: actions/checkout@v3
+    # Setting Python Version  
     - name: Set up Python ${{ inputs.python_version }}
       uses: actions/setup-python@v4
       with:
         python-version: ${{ inputs.python_version }}  
+    # Create Virtual Environment    
     - name: Create virtual env
       shell: bash
-      run: make venv   
-    - name: Install dependencies
-      shell: bash
-      run: make install    
+      run: make venv
+    # Check source code for programmatic and stylistic errors
     - name: Linting
       shell: bash
       run: make lint
+    # Run Unit-test cases  
     - name: Unit Test
       shell: bash
       run: make unittest
+    # Run Integration Test  
     - name: Integration Test
       shell: bash
       run: make integrationtest 
+    # Building the package  
     - name: Build Python package
       shell: bash
       run: make build    
     # - name: Coverage Reports 
     #   shell: bash
     #   run: make coverage 
-         
