@@ -18,15 +18,18 @@ runs:
     - name: Create virtual env
       shell: bash
       run: make venv   
-    # - name: Install dependencies
-    #   shell: bash
-    #   run: make install    
+    - name: Install dependencies
+      shell: bash
+      run: make install    
     - name: Linting
       shell: bash
       run: make lint
-    - name: Testing 
+    - name: Unit Test
       shell: bash
-      run: make test
+      run: make unittest
+    - name: Integration Test
+      shell: bash
+      run: make integrationtest 
     - name: Build Python package
       shell: bash
       run: make build    
