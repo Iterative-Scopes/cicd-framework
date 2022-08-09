@@ -1,6 +1,11 @@
 name: Running make file 
 description: "build, test, lint and codecoverage reports of the application"
 
+inputs:
+  python_version:
+    required: true
+    type: string
+
 runs:
   using: "composite"
   steps:
@@ -13,9 +18,9 @@ runs:
     - name: Create virtual env
       shell: bash
       run: make venv   
-    # - name: Install dependencies
-    #   shell: bash
-    #   run: make install    
+    - name: Install dependencies
+      shell: bash
+      run: make install    
     - name: Linting
       shell: bash
       run: make lint
