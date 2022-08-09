@@ -1,0 +1,24 @@
+name: python build
+
+on:
+  workflow_call:
+    inputs:
+      python_version:
+        required: true
+        type: string
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps: 
+      - name: Checkout
+        uses: actions/checkout@v3
+      #Uses resuable action cicd-framework repo 
+      - name: python-build-test  
+        uses:  Iterative-Scopes/cicd-framework/actions/python-build@ISOPS-505
+      - name: Build container 
+        run: make container
+      - name: Test container 
+        run: make test-container
+      - name: publish container
+        run: echo "use sharable publish"
