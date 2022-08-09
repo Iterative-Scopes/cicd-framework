@@ -39,6 +39,3 @@ runs:
     - name: Build Python package
       shell: bash
       run: make build    
-    # - name: Coverage Reports 
-    #   shell: bash
-    #   run: make coverage 
