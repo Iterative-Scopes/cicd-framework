@@ -1,5 +1,5 @@
-# This file is the sharable action with build,unittest, integration test, coverage reports test.
-# This sharable action can be used across applications by rferring this action the workflow. 
+# This file is the sharable action with build,unittest, integration test, code coverage reports.
+# The sharable action can be used across applications by referring this action in the github workflow. 
 
 name: Running make file 
 description: "build, test, lint and codecoverage reports of the application"
