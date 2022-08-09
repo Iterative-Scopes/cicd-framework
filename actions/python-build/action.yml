@@ -6,6 +6,10 @@ runs:
   steps:
     - name: Checkout
       uses: actions/checkout@v3
+    - name: Set up Python ${{ inputs.python_version }}
+      uses: actions/setup-python@v4
+      with:
+        python-version: ${{ inputs.python_version }}  
     - name: Create virtual env
       shell: bash
       run: make venv   
