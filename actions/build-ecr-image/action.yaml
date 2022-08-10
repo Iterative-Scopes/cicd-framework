@@ -23,10 +23,10 @@ runs:
     using: "composite"
     steps: 
       - name: Connect to AWS 
-        uses: aws-actions/configure-aws-credentials@v1
+        uses: Iterative-Scopes/cicd-framework/actions/aws-login@ISOPS-508
         with:
-          aws-region: ${{ inputs.aws_region }}  
-          role-to-assume: arn:aws:iam::${{ inputs.aws_account }}:role/${{ inputs.aws_role }}
+          AWS_REGION: ${{ inputs.aws_region }}  
+          ROLE_ARN: arn:aws:iam::${{ inputs.aws_account }}:role/${{ inputs.aws_role }}
     
       - name: Login to Amazon ECR
         id: login-ecr
