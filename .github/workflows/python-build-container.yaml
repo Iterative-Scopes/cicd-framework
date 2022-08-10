@@ -43,14 +43,3 @@ jobs:
           aws_role: ${{ inputs.aws_role }}
           aws_region: ${{ inputs.aws_region }}
           ecr_repository: ${{ inputs.ecr_repository }}
-          make_cmd: cpu
-
-    # use ci/cd framework action build-ecr-image
-      - name: Build, tag, and push image to Amazon ECR
-        uses: Iterative-Scopes/cicd-framework/actions/build-ecr-image@ISOPS-501-dev-push
-        with:
-          aws_account: ${{ inputs.aws_account }}
-          aws_role: ${{ inputs.aws_role }}
-          aws_region: ${{ inputs.aws_region }}
-          ecr_repository: ${{ inputs.ecr_repository }}
-          make_cmd: gpu
