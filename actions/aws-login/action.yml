@@ -7,9 +7,6 @@ inputs:
   ROLE_ARN:
     required: true
     type: string
-  SECRET_ID:
-    required: true
-    type: string
 
 runs:
   using: "composite"
