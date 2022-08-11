@@ -1,10 +1,10 @@
 name: Setup AWS OIDC IAM Role via sharableaction
 
 inputs:
-  AWS_REGION:
+  aws_region:
     required: true
     type: string
-  ROLE_ARN:
+  role_arn:
     required: true
     type: string
 
@@ -15,9 +15,9 @@ runs:
       id: aws-configure
       shell: bash
       run: |
-        export AWS_ROLE_ARN=${{inputs.ROLE_ARN}}
+        export AWS_ROLE_ARN=${{inputs.role_arn}}
         export AWS_WEB_IDENTITY_TOKEN_FILE=/tmp/awscreds
-        export AWS_DEFAULT_REGION=${{inputs.AWS_REGION}}
+        export AWS_DEFAULT_REGION=${{inputs.aws_region}}
         echo AWS_WEB_IDENTITY_TOKEN_FILE=$AWS_WEB_IDENTITY_TOKEN_FILE >> $GITHUB_ENV
         echo AWS_ROLE_ARN=$AWS_ROLE_ARN >> $GITHUB_ENV
         echo AWS_DEFAULT_REGION=$AWS_DEFAULT_REGION >> $GITHUB_ENV
