@@ -32,10 +32,11 @@ runs:
         id: login-ecr
         uses: aws-actions/amazon-ecr-login@v1
         env: 
-          aws_region: ${{ inputs.aws_region }}
+          AWS_REGION: ${{ inputs.aws_region }}
     
       - name: Build, tag, and push image to Amazon ECR
         env:
+          aws_region: ${{ inputs.aws_region }}
           REMOTE_REGISTRY: ${{ steps.login-ecr.outputs.registry }}/${{ inputs.ecr_repository }}
           IMAGE_TAG: ${{ github.ref_name }}
         shell: bash
