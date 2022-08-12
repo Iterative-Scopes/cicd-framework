@@ -20,6 +20,10 @@ runs:
       with:
         python-version: ${{ inputs.python_version }}  
     # Create Virtual Environment    
+    - name: Create .env
+      shell: bash
+      run: make
+    # Create Virtual Environment    
     - name: Create virtual env
       shell: bash
       run: make venv
