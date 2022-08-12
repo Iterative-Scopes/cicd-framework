@@ -37,7 +37,32 @@ jobs:
 
       - name: Inject slug/short variables
         uses: rlespinasse/github-slug-action@v3.x
+
+      - name: Connect to AWS 
+        uses: Iterative-Scopes/cicd-framework/actions/aws-login@main
+        with:
+          aws_region: ${{ inputs.aws_region }}  
+          role_arn: arn:aws:iam::${{ inputs.aws_account }}:role/${{ inputs.aws_role }}
+    
+      - name: Retrieve Secrets
+        id: secrets
+        uses: t-botz/aws-secrets-manager-read-action@v2
+        env: 
+          AWS_REGION: ${{ inputs.aws_region }}
+        with:
+          secret-id: ${{ inputs.secret_id }}
+          keys-as-env-vars: true
+          keys-as-outputs: true
+          append-to-env-file: ./my.env
       
+      # use ci/cd framework action python-build
+      - name: cpu-build-test  
+        uses:  Iterative-Scopes/cicd-framework/actions/ml-build@ISOPS-462
+        env: 
+          GH_ACCESSTOKEN_SECRET: ${{ env.gh_token }}
+        with:
+          python_version: ${{ inputs.python_version }}
+          build_type: cpu    
             
       # use ci/cd framework action build-ecr-image
       - name: Build, tag, and push image CPU to Amazon ECR
@@ -49,12 +74,13 @@ jobs:
           ecr_repository: ${{ inputs.ecr_repository }}
           secret_id: ${{ inputs.secret_id }}
 
-      # use ci/cd framework action python-build
-      - name: cpu-build-test  
+      - name: gpu-build-test  
         uses:  Iterative-Scopes/cicd-framework/actions/ml-build@ISOPS-462
+        env: 
+          GH_ACCESSTOKEN_SECRET: ${{ env.gh_token }}
         with:
           python_version: ${{ inputs.python_version }}
-          build_type: cpu
+          build_type: gpu
 
       - name: Build, tag, and push image GPU to Amazon ECR
         uses: Iterative-Scopes/cicd-framework/actions/build-ecr-image@ISOPS-462
@@ -65,8 +91,3 @@ jobs:
           ecr_repository: ${{ inputs.ecr_repository }}
           secret_id: ${{ inputs.secret_id }}
       
-      - name: gpu-build-test  
-        uses:  Iterative-Scopes/cicd-framework/actions/ml-build@ISOPS-462
-        with:
-          python_version: ${{ inputs.python_version }}
-          build_type: gpu
