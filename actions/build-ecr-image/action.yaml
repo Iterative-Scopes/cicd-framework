@@ -28,6 +28,15 @@ runs:
           aws_region: ${{ inputs.aws_region }}  
           role_arn: arn:aws:iam::${{ inputs.aws_account }}:role/${{ inputs.aws_role }}
     
+      - name: Retrieve Secrets
+        id: secrets
+        uses: t-botz/aws-secrets-manager-read-action@v2
+        with:
+          secret-id: ${{ inputs.secret_id }}
+          keys-as-env-vars: true
+          keys-as-outputs: true
+          append-to-env-file: ./my.env
+      
       - name: Login to Amazon ECR
         id: login-ecr
         uses: aws-actions/amazon-ecr-login@v1
@@ -38,6 +47,7 @@ runs:
         env:
           REMOTE_REGISTRY: ${{ steps.login-ecr.outputs.registry }}/${{ inputs.ecr_repository }}
           IMAGE_TAG: ${{ github.ref_name }}
+          GH_ACCESSTOKEN_SECRET: ${{ env.gh_token }}
         shell: bash
         run: |
           make ${{ inputs.make_cmd }} remotereg="$REMOTE_REGISTRY" tag="$IMAGE_TAG"

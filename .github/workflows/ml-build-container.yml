@@ -7,6 +7,10 @@ on:
         description: python version
         required: true
         type: string
+      secret_id:
+        description: secret id
+        required: true
+        type: string
       aws_account:
         description: aws account
         required: true
@@ -30,13 +34,11 @@ jobs:
     steps: 
       - name: Checkout
         uses: actions/checkout@v3
-      # use ci/cd framework action python-build
-      - name: cpu-build-test  
-        uses:  Iterative-Scopes/cicd-framework/actions/ml-build@ISOPS-462
-        with:
-          python_version: ${{ inputs.python_version }}
-          build_type: cpu
+
+      - name: Inject slug/short variables
+        uses: rlespinasse/github-slug-action@v3.x
       
+            
       # use ci/cd framework action build-ecr-image
       - name: Build, tag, and push image CPU to Amazon ECR
         uses: Iterative-Scopes/cicd-framework/actions/build-ecr-image@ISOPS-462
@@ -45,13 +47,15 @@ jobs:
           aws_role: ${{ inputs.aws_role }}
           aws_region: ${{ inputs.aws_region }}
           ecr_repository: ${{ inputs.ecr_repository }}
-      
-      - name: gpu-build-test  
+          secret_id: ${{ inputs.secret_id }}
+
+      # use ci/cd framework action python-build
+      - name: cpu-build-test  
         uses:  Iterative-Scopes/cicd-framework/actions/ml-build@ISOPS-462
         with:
           python_version: ${{ inputs.python_version }}
-          build_type: gpu
-      
+          build_type: cpu
+
       - name: Build, tag, and push image GPU to Amazon ECR
         uses: Iterative-Scopes/cicd-framework/actions/build-ecr-image@ISOPS-462
         with:
@@ -59,4 +63,10 @@ jobs:
           aws_role: ${{ inputs.aws_role }}
           aws_region: ${{ inputs.aws_region }}
           ecr_repository: ${{ inputs.ecr_repository }}
-    
+          secret_id: ${{ inputs.secret_id }}
+      
+      - name: gpu-build-test  
+        uses:  Iterative-Scopes/cicd-framework/actions/ml-build@ISOPS-462
+        with:
+          python_version: ${{ inputs.python_version }}
+          build_type: gpu
