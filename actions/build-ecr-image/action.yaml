@@ -14,6 +14,9 @@ inputs:
   ecr_repository:
     description: aws repository
     required: true
+  secret_id:
+    description: aws secret id
+    required: true
   make_cmd: 
     description: make command
     default: container
