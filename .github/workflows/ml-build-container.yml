@@ -1,0 +1,62 @@
+name: ML build and publish container artifact
+
+on:
+  workflow_call:
+    inputs:
+      python_version:
+        description: python version
+        required: true
+        type: string
+      aws_account:
+        description: aws account
+        required: true
+        type: string
+      aws_role:
+        description: aws role
+        required: true
+        type: string
+      aws_region:
+        description: aws region
+        required: true
+        type: string
+      ecr_repository:
+        description: ecr repository
+        required: true
+        type: string
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps: 
+      - name: Checkout
+        uses: actions/checkout@v3
+      # use ci/cd framework action python-build
+      - name: cpu-build-test  
+        uses:  Iterative-Scopes/cicd-framework/actions/ml-build@ISOPS-462
+        with:
+          python_version: ${{ inputs.python_version }}
+          build_type: cpu
+      
+      # use ci/cd framework action build-ecr-image
+      - name: Build, tag, and push image CPU to Amazon ECR
+        uses: Iterative-Scopes/cicd-framework/actions/build-ecr-image@ISOPS-462
+        with:
+          aws_account: ${{ inputs.aws_account }}
+          aws_role: ${{ inputs.aws_role }}
+          aws_region: ${{ inputs.aws_region }}
+          ecr_repository: ${{ inputs.ecr_repository }}
+      
+      - name: gpu-build-test  
+        uses:  Iterative-Scopes/cicd-framework/actions/ml-build@ISOPS-462
+        with:
+          python_version: ${{ inputs.python_version }}
+          build_type: gpu
+      
+      - name: Build, tag, and push image GPU to Amazon ECR
+        uses: Iterative-Scopes/cicd-framework/actions/build-ecr-image@ISOPS-462
+        with:
+          aws_account: ${{ inputs.aws_account }}
+          aws_role: ${{ inputs.aws_role }}
+          aws_region: ${{ inputs.aws_region }}
+          ecr_repository: ${{ inputs.ecr_repository }}
+    
