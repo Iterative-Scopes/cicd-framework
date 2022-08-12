@@ -31,6 +31,8 @@ runs:
       - name: Retrieve Secrets
         id: secrets
         uses: t-botz/aws-secrets-manager-read-action@v2
+        env: 
+          AWS_REGION: ${{ inputs.aws_region }}
         with:
           secret-id: ${{ inputs.secret_id }}
           keys-as-env-vars: true
