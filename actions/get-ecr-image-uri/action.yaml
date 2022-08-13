@@ -59,4 +59,4 @@ runs:
         shell: bash
         run: |
           aws ecr describe-images --repository-name ${{ inputs.ecr_repository }} --image-ids imageTag=${{ inputs.tag }}
-          echo "::error title="can't get image [${{ inputs.ecr_repository }}:${{ inputs.tag }}] metadata"
+          echo "::error title="can't get image [${{ inputs.ecr_repository }}:${{ inputs.tag }}] metadata""
