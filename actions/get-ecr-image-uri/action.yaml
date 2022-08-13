@@ -52,9 +52,9 @@ runs:
         run: |
           if [ -z ${{env.IMG_SHA}} ]; 
           then 
-            echo "cannot get image [${{ inputs.ecr_repository }}:${{ inputs.tag }}] metadata"
-            aws ecr describe-images --repository-name ${{ inputs.ecr_repository }} --image-ids imageTag=${{ inputs.tag }}
-            exit 1
-          endif;
+            echo "cannot get image [${{ inputs.ecr_repository }}:${{ inputs.tag }}] metadata";
+            aws ecr describe-images --repository-name ${{ inputs.ecr_repository }} --image-ids imageTag=${{ inputs.tag }};
+            exit 1;
+          fi;
           echo "image sha = ${{ env.IMG_SHA }}" 
           echo "::set-output name=uri::${{ steps.login-ecr.outputs.registry }}/${{ inputs.ecr_repository }}@${{ env.IMG_SHA }}"
