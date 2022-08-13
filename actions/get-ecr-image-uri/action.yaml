@@ -44,7 +44,7 @@ runs:
           REGISTRY: ${{ steps.login-ecr.outputs.registry }}
         shell: bash
         run: |
-          echo IMG_SHA=$(aws ecr describe-images --repository-name ${{ inputs.ecr_repository }} --image-ids imageTag=${{ input.tag }} | jq -r '.imageDetails[0] | .imageDigest') >> $GITHUB_ENV
+          echo IMG_SHA=$(aws ecr describe-images --repository-name ${{ inputs.ecr_repository }} --image-ids imageTag=${{ inputs.tag }} | jq -r '.imageDetails[0] | .imageDigest') >> $GITHUB_ENV
       
       - name: setup image URI
         if: ${{ env.IMG_SHA }}+x != "x"
@@ -58,5 +58,5 @@ runs:
         if: ${{ env.IMG_SHA }} == ""
         shell: bash
         run: |
-          aws ecr describe-images --repository-name ${{ inputs.ecr_repository }} --image-ids imageTag=${{ input.tag }}
-          echo "::error title="can't get image [${{ inputs.ecr_repository }}:${{ input.tag }}] metadata"
+          aws ecr describe-images --repository-name ${{ inputs.ecr_repository }} --image-ids imageTag=${{ inputs.tag }}
+          echo "::error title="can't get image [${{ inputs.ecr_repository }}:${{ inputs.tag }}] metadata"
