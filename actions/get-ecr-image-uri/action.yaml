@@ -1,0 +1,62 @@
+name: ecr image uri
+description: get ecr image by image tag
+
+inputs:
+  aws_account:
+    description: aws account
+    required: true
+  aws_role:
+    description: aws role
+    required: true
+  aws_region:
+    description: aws region
+    required: true
+  ecr_repository:
+    description: aws repository
+    required: true
+  tag: 
+    description: image tag
+    default: latest
+    required: true
+
+outputs:
+  uri:
+    description: image uri
+    value: ${{ steps.set-uri.outputs.uri }}
+
+runs:
+    using: "composite"
+    steps: 
+      - name: Connect to AWS 
+        uses: Iterative-Scopes/cicd-framework/actions/aws-login@main
+        with:
+          aws_region: ${{ inputs.aws_region }}  
+          role_arn: arn:aws:iam::${{ inputs.aws_account }}:role/${{ inputs.aws_role }}
+    
+      - name: Login to Amazon ECR
+        id: login-ecr
+        uses: aws-actions/amazon-ecr-login@v1
+        env: 
+          AWS_REGION: ${{ inputs.aws_region }}
+    
+      - name: get image imageDigest by tag
+        env:
+          REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+        shell: bash
+        run: |
+          echo IMG_SHA=$(aws ecr describe-images --repository-name ${{ inputs.ecr_repository }} --image-ids imageTag=${{ input.tag }} | jq -r '.imageDetails[0] | .imageDigest') >> $GITHUB_ENV
+      
+      - name: setup image URI
+        if: ${{ env.IMG_SHA }}+x != "x"
+        id: set-uri
+        shell: bash
+        run: |
+          echo "image sha = ${{ env.IMG_SHA }}" 
+          echo "::set-output name=uri::${{ steps.login-ecr.outputs.registry }}/${{ inputs.ecr_repository }}@${{ env.IMG_SHA }}"  
+
+      - name: set error
+        if: ${{ env.IMG_SHA }} == ""
+        shell: bash
+        run: |
+          aws ecr describe-images --repository-name ${{ inputs.ecr_repository }} --image-ids imageTag=${{ input.tag }}
+          echo "::error title="can't get image [${{ inputs.ecr_repository }}:${{ input.tag }}] metadata"
