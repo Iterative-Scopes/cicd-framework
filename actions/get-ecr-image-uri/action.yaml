@@ -44,7 +44,7 @@ runs:
           REGISTRY: ${{ steps.login-ecr.outputs.registry }}
         shell: bash
         run: |
-          echo IMG_SHA=$(aws ecr describe-images --repository-name ${{ inputs.ecr_repository }} --image-ids imageTag=${{ inputs.tag }} | jq -r '.imageDetails[0] | .imageDigest') >> $GITHUB_ENV
+          echo IMG_SHA=$(aws ecr describe-images --repository-name ${{ inputs.ecr_repository }} --image-ids imageTag=${{ inputs.tag }} | jq -r '.imageDetails[1] | .imageDigest') >> $GITHUB_ENV
       
       - name: setup image URI
         id: set-uri
