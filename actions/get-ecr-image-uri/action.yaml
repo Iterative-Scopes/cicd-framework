@@ -14,7 +14,7 @@ inputs:
   ecr_repository:
     description: aws repository
     required: true
-  tag: 
+  image_tag: 
     description: image tag
     default: latest
     required: true
@@ -33,12 +33,12 @@ runs:
         env: 
           AWS_REGION: ${{ inputs.aws_region }}
     
-      - name: get image imageDigest by tag
+      - name: get image imageDigest by given image tag
         env:
           REGISTRY: ${{ steps.login-ecr.outputs.registry }}
         shell: bash
         run: |
-          echo IMG_SHA=$(aws ecr describe-images --repository-name ${{ inputs.ecr_repository }} --image-ids imageTag=${{ inputs.tag }} | jq -r '.imageDetails[0] | .imageDigest') >> $GITHUB_ENV
+          echo IMG_SHA=$(aws ecr describe-images --repository-name ${{ inputs.ecr_repository }} --image-ids imageTag=${{ inputs.image_tag }} | jq -r '.imageDetails[0] | .imageDigest') >> $GITHUB_ENV
       
       - name: setup image URI
         id: set-uri
@@ -46,8 +46,8 @@ runs:
         run: |
           if [ ${{ env.IMG_SHA }} == "null" ]; 
           then 
-            echo "cannot get image [${{ inputs.ecr_repository }}:${{ inputs.tag }}] metadata";
-            aws ecr describe-images --repository-name ${{ inputs.ecr_repository }} --image-ids imageTag=${{ inputs.tag }};
+            echo "cannot get image [${{ inputs.ecr_repository }}:${{ inputs.image_tag }}] metadata";
+            aws ecr describe-images --repository-name ${{ inputs.ecr_repository }} --image-ids imageTag=${{ inputs.image_tag }};
             exit 1;
           fi;
           echo "image sha = ${{ env.IMG_SHA }}" 

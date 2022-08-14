@@ -19,8 +19,8 @@ inputs:
   ecr_repository:
     description: aws repository
     required: false
-  tag: 
-    description: image tag
+  image_tag: 
+    description: ecr container image tag
     default: latest
     required: false
 # S3 uri for lambda code  
@@ -42,8 +42,8 @@ runs:
           aws_region: ${{ inputs.aws_region }}  
           role_arn: arn:aws:iam::${{ inputs.aws_account }}:role/${{ inputs.aws_role }}
       
-      - name: update container lambda - get image uri with a tag
-        if: ${{ inputs.ecr_repository &&  inputs.tag }}
+      - name: update container lambda - get image uri with given image tag
+        if: ${{ inputs.ecr_repository &&  inputs.image_tag }}
         uses: Iterative-Scopes/cicd-framework/actions/get-ecr-image-uri@ISOPS-516-ecr-img 
         id: get-image-uri
         with: 
@@ -51,7 +51,7 @@ runs:
           aws_role: ${{ inputs.aws_role }}
           aws_region: ${{ inputs.aws_region }}
           ecr_repository: ${{ inputs.ecr_repository }}
-          tag: ${{ inputs.tag }} 
+          image_tag: ${{ inputs.image_tag }} 
 
       - name: update container lambda - update lambda with image uri
         if: ${{ steps.get-image-uri.outputs.uri }}
