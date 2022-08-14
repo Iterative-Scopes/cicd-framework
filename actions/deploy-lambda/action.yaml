@@ -31,7 +31,8 @@ runs:
           aws_region: ${{ inputs.aws_region }}  
           role_arn: arn:aws:iam::${{ inputs.aws_account }}:role/${{ inputs.aws_role }}
       
-      - name: get image 
+      - name: get image uri with a tag
+        if: ${{ inputs.ecr_repository &&  inputs.tag }}
         uses: Iterative-Scopes/cicd-framework/actions/get-ecr-image-uri@ISOPS-516-ecr-img 
         id: get-image-uri
         with: 
@@ -42,6 +43,7 @@ runs:
           tag: ${{ inputs.tag }} 
 
       - name: update lambda image
+        if: ${{ steps.get-image-uri.outputs.uri }}
         shell: bash
         run: |
           echo ${{ steps.get-image-uri.outputs.uri }}
