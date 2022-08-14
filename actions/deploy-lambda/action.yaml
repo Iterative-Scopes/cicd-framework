@@ -1,0 +1,49 @@
+name: ecr image uri
+description: get ecr image by image tag
+
+inputs:
+  aws_account:
+    description: aws account
+    required: true
+  aws_role:
+    description: aws role
+    required: true
+  aws_region:
+    description: aws region
+    required: true
+  ecr_repository:
+    description: aws repository
+    required: true
+  tag: 
+    description: image tag
+    default: latest
+    required: true
+  lambda: 
+    description: lambda name
+    required: true
+
+runs:
+    using: "composite"
+    steps: 
+      - name: Connect to AWS 
+        uses: Iterative-Scopes/cicd-framework/actions/aws-login@main
+        with:
+          aws_region: ${{ inputs.aws_region }}  
+          role_arn: arn:aws:iam::${{ inputs.aws_account }}:role/${{ inputs.aws_role }}
+      
+      - name: get image 
+        uses: Iterative-Scopes/cicd-framework/actions/get-ecr-image-uri@ISOPS-516-ecr-img 
+        id: get-image-uri
+        with: 
+          aws_account: ${{ inputs.aws_account }}
+          aws_role: ${{ inputs.aws_role }}
+          aws_region: ${{ inputs.aws_region }}
+          ecr_repository: ${{ inputs.ecr_repository }}
+          tag: ${{ inputs.tag }} 
+
+      - name: update lambda image
+        shell: bash
+        run: |
+          echo ${{ steps.get-image-uri.outputs.uri }}
+          aws lambda update-function-code --function-name ${{ inputs.lambda }} --image-uri ${{ steps.get-image-uri.outputs.uri }}
+  
