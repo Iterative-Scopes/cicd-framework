@@ -37,7 +37,7 @@ runs:
         id: login-ecr
         uses: aws-actions/amazon-ecr-login@v1
         env: 
-          AWS_REGION: ${{ inputs.aws_region }}
+          AWS_REGION: ${{ github.AWS_DEFAULT_REGION }}
     
       - name: get image imageDigest by tag
         env:
