@@ -27,17 +27,11 @@ outputs:
 runs:
     using: "composite"
     steps: 
-      - name: Connect to AWS 
-        uses: Iterative-Scopes/cicd-framework/actions/aws-login@main
-        with:
-          aws_region: ${{ inputs.aws_region }}  
-          role_arn: arn:aws:iam::${{ inputs.aws_account }}:role/${{ inputs.aws_role }}
-    
       - name: Login to Amazon ECR
         id: login-ecr
         uses: aws-actions/amazon-ecr-login@v1
         env: 
-          AWS_REGION: ${{ github.AWS_DEFAULT_REGION }}
+          AWS_REGION: ${{ inputs.aws_region }}
     
       - name: get image imageDigest by tag
         env:
