@@ -1,5 +1,5 @@
-name: ecr image uri
-description: get ecr image by image tag
+name: deploy lambda
+description: update lambda with container, S3 or zip 
 
 inputs:
   aws_account:
@@ -11,27 +11,38 @@ inputs:
   aws_region:
     description: aws region
     required: true
-  ecr_repository:
-    description: aws repository
-    required: true
-  tag: 
-    description: image tag
-    default: latest
-    required: true
   lambda: 
     description: lambda name
     required: true
 
+# lambda container for lambda code
+  ecr_repository:
+    description: aws repository
+    required: false
+  tag: 
+    description: image tag
+    default: latest
+    required: false
+# S3 uri for lambda code  
+  s3_uri:
+    description: S3 uri
+    required: false
+
+# zip file path for lambda code  
+  zip_file:
+    description: zip file path
+    required: false
+
 runs:
     using: "composite"
     steps: 
-      - name: Connect to AWS 
+      - name: connect to AWS 
         uses: Iterative-Scopes/cicd-framework/actions/aws-login@main
         with:
           aws_region: ${{ inputs.aws_region }}  
           role_arn: arn:aws:iam::${{ inputs.aws_account }}:role/${{ inputs.aws_role }}
       
-      - name: get image uri with a tag
+      - name: update container lambda - get image uri with a tag
         if: ${{ inputs.ecr_repository &&  inputs.tag }}
         uses: Iterative-Scopes/cicd-framework/actions/get-ecr-image-uri@ISOPS-516-ecr-img 
         id: get-image-uri
@@ -42,10 +53,22 @@ runs:
           ecr_repository: ${{ inputs.ecr_repository }}
           tag: ${{ inputs.tag }} 
 
-      - name: update lambda image
+      - name: update container lambda - update lambda with image uri
         if: ${{ steps.get-image-uri.outputs.uri }}
         shell: bash
         run: |
           echo ${{ steps.get-image-uri.outputs.uri }}
           aws lambda update-function-code --function-name ${{ inputs.lambda }} --image-uri ${{ steps.get-image-uri.outputs.uri }}
   
+      - name: update lambda with S3
+        if: ${{ inputs.s3_uri }}
+        shell: bash
+        run: |
+          echo "update lambda with [${{ inputs.s3_uri }}] --- coming soon"
+      
+      - name: update lambda with zip file
+        if: ${{ inputs.zip_file }}
+        shell: bash
+        run: |
+          echo "update lambda with zip file [${{ inputs.zip_file }}] --- coming soon"
+         
