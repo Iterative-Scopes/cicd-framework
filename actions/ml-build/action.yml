@@ -42,4 +42,4 @@ runs:
     # Building the package  
     - name: Build ML Model container
       shell: bash
-      run: make  ${{ inputs.build_type }}  
+      run: make build  
