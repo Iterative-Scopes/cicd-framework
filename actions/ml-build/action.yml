@@ -35,6 +35,10 @@ runs:
     - name: Integration Test
       shell: bash
       run: make integrationtest 
+    # Create .env file   
+    - name: Create virtual env
+      shell: bash
+      run: make all
     # Building the package  
     - name: Build ML Model container
       shell: bash
