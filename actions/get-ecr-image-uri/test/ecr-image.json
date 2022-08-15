@@ -1,0 +1,27 @@
+{
+    "imageDetails": [
+        {
+            "registryId": "1234561111",
+            "repositoryName": "my-image-sha-test",
+            "imageDigest": "sha256:adcecabe20b6afdaa89bb5cd662e962b1cd968073fbc328626b9003f2778ba7a",
+            "imageTags": [
+                "sha_test"
+            ],
+            "imageSizeInBytes": 178177296,
+            "imagePushedAt": "2022-08-12T19:08:39+00:00",
+            "imageScanStatus": {
+                "status": "COMPLETE",
+                "description": "The scan was completed successfully."
+            },
+            "imageScanFindingsSummary": {
+                "imageScanCompletedAt": "2022-08-12T19:08:52+00:00",
+                "vulnerabilitySourceUpdatedAt": "2022-08-10T22:45:46+00:00",
+                "findingSeverityCounts": {
+                    "MEDIUM": 1
+                }
+            },
+            "imageManifestMediaType": "application/vnd.docker.distribution.manifest.v2+json",
+            "artifactMediaType": "application/vnd.docker.container.image.v1+json"
+        }
+    ]
+}

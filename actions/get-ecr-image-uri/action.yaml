@@ -1,5 +1,5 @@
 name: ecr image uri
-description: get ecr image by image tag
+description: get ecr image by image tag after aws authentication
 
 inputs:
   aws_account:

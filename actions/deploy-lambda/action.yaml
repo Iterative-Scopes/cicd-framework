@@ -44,7 +44,7 @@ runs:
       
       - name: update container lambda - get image uri with given image tag
         if: ${{ inputs.ecr_repository &&  inputs.image_tag }}
-        uses: Iterative-Scopes/cicd-framework/actions/get-ecr-image-uri@ISOPS-516-ecr-img 
+        uses: Iterative-Scopes/cicd-framework/actions/get-ecr-image-uri@main
         id: get-image-uri
         with: 
           aws_account: ${{ inputs.aws_account }}
