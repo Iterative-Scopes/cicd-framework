@@ -7,10 +7,6 @@ on:
         description: python version
         required: true
         type: string
-      secret_id:
-        description: secret id
-        required: true
-        type: string
       aws_account:
         description: aws account
         required: true
