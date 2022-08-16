@@ -12,5 +12,4 @@ jobs:
     steps:
       # Run Integration Test  
       - name: Integration Test
-        shell: bash
         run: make integrationtest 
