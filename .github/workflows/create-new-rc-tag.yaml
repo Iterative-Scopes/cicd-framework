@@ -1,0 +1,17 @@
+name: Create a new rc tag
+
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: give semantic version tag
+        required: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: checkout
+        uses: actions/checkout@v3
+      - name: Echo the workflow triggering github tag
+        run: echo "User input tag ${{ github.event.inputs.version }}"
