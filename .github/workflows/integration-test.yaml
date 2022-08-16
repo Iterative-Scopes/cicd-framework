@@ -4,6 +4,9 @@
 name: Integration test
 description: Run Integration test"
 
+on:
+  workflow_call:
+
 jobs:
   Integration-test:
     runs-on: ubuntu-latest
