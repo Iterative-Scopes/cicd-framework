@@ -2,7 +2,6 @@
 # The sharable workflow can be used across applications by referring this action in the github workflow. 
 
 name: Integration test
-description: Run Integration test"
 
 on:
   workflow_call
