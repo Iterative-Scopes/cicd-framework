@@ -1,0 +1,37 @@
+name: Create a new rc tag
+
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: give a semantic version tag
+        required: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: checkout
+        uses: actions/checkout@v3
+      - name: Echo the workflow triggering github tag
+        run: echo "User input tag ${{ github.event.inputs.version }}"
+      - name: Conform semantic versioning
+        env:
+          INPUT_TAG: ${{ github.event.inputs.version  }}
+        shell: bash
+        run: |
+          NAT='0|[1-9][0-9]*'
+          ALPHANUM='[0-9]*[A-Za-z-][0-9A-Za-z-]*'
+          IDENT="$NAT|$ALPHANUM"
+          FIELD='[0-9A-Za-z-]+'
+          SEMVER_REGEX="\
+          ^[vV]?\
+          ($NAT)\\.($NAT)\\.($NAT)\
+          (\\-(${IDENT})(\\.(${IDENT}))*)?\
+          (\\+${FIELD}(\\.${FIELD})*)?$"
+          local version=$INPUT_TAG
+          if [[ "$version" =~ $SEMVER_REGEX ]]; then
+            echo "version $version is OK"
+          else
+            echo "version $version does not match the semver scheme 'X.Y.Z(-PRERELEASE)(+BUILD)'. See help for more information."
+          fi
