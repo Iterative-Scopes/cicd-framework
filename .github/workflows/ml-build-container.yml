@@ -34,27 +34,12 @@ jobs:
     steps: 
       - name: Checkout
         uses: actions/checkout@v3
-
-      - name: Connect to AWS 
-        uses: Iterative-Scopes/cicd-framework/actions/aws-login@main
-        with:
-          aws_region: ${{ inputs.aws_region }}  
-          role_arn: arn:aws:iam::${{ inputs.aws_account }}:role/${{ inputs.aws_role }}
     
-      - name: Retrieve Secrets
-        id: secrets
-        shell: bash
-        run: |
-          secret=$(aws secretsmanager get-secret-value --secret-id ${{ inputs.secret_id }} --region ${{ inputs.aws_region }} --query SecretString --output text)
-      
       # use ci/cd framework action python-build
       - name: cpu-build-test  
-        uses:  Iterative-Scopes/cicd-framework/actions/ml-build@ISOPS-462
-        env: 
-          GH_ACCESSTOKEN_SECRET: ${{ steps.secrets.outputs.secret }}
+        uses:  Iterative-Scopes/cicd-framework/actions/python-build@ISOPS-462
         with:
-          python_version: ${{ inputs.python_version }}
-          build_type: cpu    
+          python_version: ${{ inputs.python_version }} 
             
       # use ci/cd framework action build-ecr-image
       - name: Build, tag, and push image CPU to Amazon ECR
@@ -64,15 +49,12 @@ jobs:
           aws_role: ${{ inputs.aws_role }}
           aws_region: ${{ inputs.aws_region }}
           ecr_repository: ${{ inputs.ecr_repository }}
-          secret_id: ${{ inputs.secret_id }}
+          make_cmd: cpu
 
       - name: gpu-build-test  
-        uses:  Iterative-Scopes/cicd-framework/actions/ml-build@ISOPS-462
-        env: 
-          GH_ACCESSTOKEN_SECRET: ${{ steps.secrets.outputs.secret }}
+        uses:  Iterative-Scopes/cicd-framework/actions/python-build@ISOPS-462
         with:
           python_version: ${{ inputs.python_version }}
-          build_type: gpu
 
       - name: Build, tag, and push image GPU to Amazon ECR
         uses: Iterative-Scopes/cicd-framework/actions/build-ecr-image@ISOPS-462
@@ -81,5 +63,4 @@ jobs:
           aws_role: ${{ inputs.aws_role }}
           aws_region: ${{ inputs.aws_region }}
           ecr_repository: ${{ inputs.ecr_repository }}
-          secret_id: ${{ inputs.secret_id }}
-      
+          make_cmd: gpu
