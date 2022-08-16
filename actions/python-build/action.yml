@@ -31,10 +31,12 @@ runs:
     - name: Unit Test
       shell: bash
       run: make unittest
-    # Run Integration Test  
-    - name: Integration Test
-      shell: bash
-      run: make integrationtest 
+      
+    # # Run Integration Test  
+    # - name: Integration Test
+    #   shell: bash
+    #   run: make integrationtest 
+
     # Building the package  
     - name: Build Python package
       shell: bash

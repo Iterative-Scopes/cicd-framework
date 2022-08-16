@@ -1,0 +1,14 @@
+# This file is the sharable workflow for runnning  integration test.
+# The sharable workflow can be used across applications by referring this action in the github workflow. 
+
+name: Integration test
+description: Run Integration test"
+
+jobs:
+  Integration-test:
+    runs-on: ubuntu-latest
+    steps:
+      # Run Integration Test  
+      - name: Integration Test
+        shell: bash
+        run: make integrationtest 
