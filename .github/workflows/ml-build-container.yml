@@ -33,13 +33,13 @@ jobs:
     
       # use ci/cd framework action python-build
       - name: cpu-build-test  
-        uses:  Iterative-Scopes/cicd-framework/actions/python-build@ISOPS-462
+        uses:  Iterative-Scopes/cicd-framework/actions/python-build@main
         with:
           python_version: ${{ inputs.python_version }} 
             
       # use ci/cd framework action build-ecr-image
       - name: Build, tag, and push image CPU to Amazon ECR
-        uses: Iterative-Scopes/cicd-framework/actions/build-ecr-image@ISOPS-462
+        uses: Iterative-Scopes/cicd-framework/actions/build-ecr-image@main
         with:
           aws_account: ${{ inputs.aws_account }}
           aws_role: ${{ inputs.aws_role }}
@@ -48,12 +48,12 @@ jobs:
           make_cmd: cpu
 
       - name: gpu-build-test  
-        uses:  Iterative-Scopes/cicd-framework/actions/python-build@ISOPS-462
+        uses:  Iterative-Scopes/cicd-framework/actions/python-build@main
         with:
           python_version: ${{ inputs.python_version }}
 
       - name: Build, tag, and push image GPU to Amazon ECR
-        uses: Iterative-Scopes/cicd-framework/actions/build-ecr-image@ISOPS-462
+        uses: Iterative-Scopes/cicd-framework/actions/build-ecr-image@main
         with:
           aws_account: ${{ inputs.aws_account }}
           aws_role: ${{ inputs.aws_role }}
