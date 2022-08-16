@@ -5,7 +5,7 @@ name: Integration test
 description: Run Integration test"
 
 on:
-  workflow_call:
+  workflow_call
 
 jobs:
   Integration-test:
