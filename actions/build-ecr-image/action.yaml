@@ -52,4 +52,3 @@ runs:
           docker push $REMOTE_REGISTRY:$IMAGE_TAG
           echo "set output tag ["$IMAGE_TAG"]"
           echo "::set-output name=tag::"$IMAGE_TAG""
-          
