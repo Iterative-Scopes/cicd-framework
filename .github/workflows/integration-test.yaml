@@ -4,11 +4,13 @@
 name: Integration test
 
 on:
-  workflow_call
+  workflow_call:
 
 jobs:
   Integration-test:
     runs-on: ubuntu-latest
-    steps:
-      # Run Integration Test  
-      - run: make integrationtest 
+		steps:
+		  - name: Checkout
+		    uses: actions/checkout@v3 
+		  - name: Testing 
+		    run: make integrationtest 
