@@ -9,7 +9,7 @@ on:
         type: string
 
 jobs:
-  build:
+  python-build:
     runs-on: ubuntu-latest
     steps: 
       - name: Checkout
