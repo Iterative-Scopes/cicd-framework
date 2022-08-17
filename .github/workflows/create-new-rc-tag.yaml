@@ -1,22 +1,37 @@
 name: Create a new rc tag
 
 on:
-  push:
-    branches:
-      - "*"
   workflow_dispatch:
     inputs:
       rc-tag:
         description: give a semantic version tag
         required: true
+      rc-tag-message:
+        description: give a message
+        required: false
+        default: "Auto generated tag"
 jobs:
   build:
     runs-on: ubuntu-latest
     steps:
       - name: checkout
         uses: actions/checkout@v3
-      - name: Validate input RC tag
+      - name: validate input RC tag
         uses: Iterative-Scopes/cicd-framework/actions/validate-rc-tag@isops-503
         with:
-          # tag: ${{ inputs.rc-tag }}
-          tag: 1.0.1
+          tag: ${{ inputs.rc-tag }}
+      - name: Creating tag
+        env:
+          INPUT_TAG: ${{ inputs.rc-tag  }}
+          INPUT_TAG_MESSAGE: ${{ inputs.rc-tag-message }}
+          GITHUB_ACTOR: ${{ github.actor }}
+        shell: bash
+        run: |
+          echo "[action-create-rc-tag] Setting committer identity ${GITHUB_ACTOR}"
+          git config --global user.email "${GITHUB_ACTOR}@users.noreply.github.com"
+          git config --global user.name "${GITHUB_ACTOR}"
+          echo "[action-create-rc-tag] Creating tag ${INPUT_TAG}"
+          git tag -fa "${INPUT_TAG}" -m "${INPUT_TAG_MESSAGE}"
+          echo "[action-create-rc-tag] Pushing tag ${INPUT_TAG}"
+          git push origin "${INPUT_TAG}"
+        
