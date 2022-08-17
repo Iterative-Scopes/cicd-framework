@@ -50,4 +50,4 @@ runs:
           make ${{ inputs.make_cmd }} remotereg="$REMOTE_REGISTRY" tag="$IMAGE_TAG"
           make ${{ inputs.make_cmd }}test
           docker push $REMOTE_REGISTRY:$IMAGE_TAG
-#          echo "::set-output name=tag::$IMAGE_TAG"
+          echo "::set-output name=tag::$IMAGE_TAG"
