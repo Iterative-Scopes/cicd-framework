@@ -11,6 +11,4 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       # Run Integration Test  
-    - name: Integration Test
-      run: |
-        make integrationtest 
+      - run: make integrationtest 
