@@ -46,7 +46,7 @@ runs:
           IMAGE_TAG: ${{ github.ref_name }}
         shell: bash
         run: |
-          echo "image tag [$IMAGE_TAG]
+          echo "image tag [$IMAGE_TAG]"
           make ${{ inputs.make_cmd }} remotereg="$REMOTE_REGISTRY" tag="$IMAGE_TAG"
           make ${{ inputs.make_cmd }}test
           docker push $REMOTE_REGISTRY:$IMAGE_TAG
