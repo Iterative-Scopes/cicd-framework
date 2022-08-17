@@ -12,12 +12,3 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - run: make integrationtest
-
-# jobs:
-#   Integration-test:
-#     runs-on: ubuntu-latest
-		# steps:
-		#   - name: Checkout
-		#     uses: actions/checkout@v3 
-		#   - name: Testing 
-		#     run: make integrationtest 
