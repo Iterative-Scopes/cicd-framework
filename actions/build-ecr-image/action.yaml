@@ -1,5 +1,5 @@
 name: build ecr image
-description: build a container image and push to ecr
+description: build a container image and push to ecr, return image tag
 
 inputs:
   aws_account:
@@ -19,6 +19,11 @@ inputs:
     default: container
     required: true
 
+outputs:
+  tag:
+    description: image tag
+    value: ${{ steps.erc-image.outputs.tag }}
+
 runs:
     using: "composite"
     steps: 
@@ -35,11 +40,15 @@ runs:
           AWS_REGION: ${{ inputs.aws_region }}
     
       - name: Build, tag, and push image to Amazon ECR
+        id: erc-image
         env:
           REMOTE_REGISTRY: ${{ steps.login-ecr.outputs.registry }}/${{ inputs.ecr_repository }}
           IMAGE_TAG: ${{ github.ref_name }}
         shell: bash
         run: |
+          echo "image tag [$IMAGE_TAG]"
           make ${{ inputs.make_cmd }} remotereg="$REMOTE_REGISTRY" tag="$IMAGE_TAG"
           make ${{ inputs.make_cmd }}test
           docker push $REMOTE_REGISTRY:$IMAGE_TAG
+          echo "set output tag ["$IMAGE_TAG"]"
+          echo "::set-output name=tag::"$IMAGE_TAG""
