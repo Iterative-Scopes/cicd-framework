@@ -30,7 +30,7 @@ runs:
       shell: bash
       run: |
         echo "INPUT_IS_ENV=${{ inputs.is_env }}" >> $GITHUB_ENV
-        echo "INPUT_IS_ENV=${{ inputs.mode }}" >> $GITHUB_ENV
+        echo "INPUT_MODE=${{ inputs.mode }}" >> $GITHUB_ENV
 
     - name: Fetch the number's square
       id: get-settings
