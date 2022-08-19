@@ -9,11 +9,11 @@ inputs:
     required: false
     default: build
 
-outputs:
-  aws_account:
-    description: "Output from the action"
-  aws_role:
-    description: "Output from the action"
+#outputs:
+#  aws_account:
+#    description: "Output from the action"
+#  aws_role:
+#    description: "Output from the action"
 
 runs:
   using: 'composite'
