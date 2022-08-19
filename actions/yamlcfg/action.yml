@@ -9,11 +9,11 @@ inputs:
     required: false
     default: build
 
-#outputs:
-#  aws_account:
-#    description: "Output from the action"
-#  aws_role:
-#    description: "Output from the action"
+outputs:
+  aws_account:
+    description: "Output from the action"
+  aws_role:
+    description: "Output from the action"
 
 runs:
   using: 'composite'
@@ -26,10 +26,12 @@ runs:
     #- name: Install Dependencies
     #  run: pip install -r requirements.txt
     #  shell: bash
-    #- name: Pass Inputs to Shell
-    #  run: |
-    #   echo "INPUT_NUM=${{ inputs.num }}" >> $GITHUB_ENV
-    #  shell: bash
+    - name: pass Inputs to python script
+      shell: bash
+      run: |
+        echo "INPUT_IS_ENV=${{ inputs.is_env }}" >> $GITHUB_ENV
+        echo "INPUT_IS_ENV=${{ inputs.mode }}" >> $GITHUB_ENV
+
     - name: Fetch the number's square
       id: get-settings
       run: python './actions/yamlcfg/main.py'

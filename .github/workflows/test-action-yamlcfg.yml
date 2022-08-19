@@ -10,7 +10,7 @@ jobs:
 
       - name: test 
         id: unittest
-        uses: actions/yamlcfg@ISOPS-533-aws-settings
+        uses: ./actions/yamlcfg@ISOPS-533-aws-settings
         with:
           is_env: dev
           mode: build
