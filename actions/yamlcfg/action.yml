@@ -32,5 +32,5 @@ runs:
     #  shell: bash
     - name: Fetch the number's square
       id: get-settings
-      run: python main.py
+      run: python ./main.py
       shell: bash
