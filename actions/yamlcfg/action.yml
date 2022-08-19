@@ -34,5 +34,5 @@ runs:
 
     - name: Fetch the number's square
       id: get-settings
-      run: python './actions/yamlcfg/main.py'
+      run: python "${{ github.action_path }}/main.py"
       shell: bash
