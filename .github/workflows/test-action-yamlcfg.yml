@@ -1,0 +1,20 @@
+name: sharable action unit testing
+on: [push]
+
+jobs:
+  test_yamlcfg:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: test 
+        id: unittest
+        uses: actions/yamlcfg@ISOPS-533-aws-settings
+        with:
+          is_env: dev
+          mode: build
+
+      - name: Check outputs
+        run: |
+          test "${{ steps.unittest.outputs.aws_account }}" == "[dev]-[build]"

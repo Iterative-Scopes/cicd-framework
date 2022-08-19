@@ -1,0 +1,36 @@
+name: "Yaml configuration"
+description: "read IS CI/CD yaml configuration"
+inputs:
+  is_env:
+    description: "is environment"
+    required: true
+  mode:
+    description: "action mode, build, deploy or test"
+    required: false
+    default: build
+
+outputs:
+  aws_account:
+    description: "Output from the action"
+  aws_role:
+    description: "Output from the action"
+
+runs:
+  using: 'composite'
+  steps:
+    - name: Install Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.9'  
+
+    #- name: Install Dependencies
+    #  run: pip install -r requirements.txt
+    #  shell: bash
+    #- name: Pass Inputs to Shell
+    #  run: |
+    #   echo "INPUT_NUM=${{ inputs.num }}" >> $GITHUB_ENV
+    #  shell: bash
+    - name: Fetch the number's square
+      id: get-settings
+      run: python main.py
+      shell: bash
