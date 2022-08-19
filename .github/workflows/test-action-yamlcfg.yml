@@ -17,4 +17,5 @@ jobs:
 
       - name: Check outputs
         run: |
+          echo ${{ steps.unittest.outputs.aws_account }}
           test "${{ steps.unittest.outputs.aws_account }}" == "[dev]-[build]"
