@@ -22,7 +22,6 @@ def get_settings(env, role, config):
         print(f"::set-output name=aws_region::{cfg['aws'][env]['region']}")
         print(f"::set-output name=aws_role::{cfg['role'][role]}")
         print(f"::set-output name=app_name::{cfg['application']['name']}")
-        print(f"::set-output name=prefix::{env}")
     except KeyError as e:
         print(f"Incorrect key value [{e}]")
         return 3

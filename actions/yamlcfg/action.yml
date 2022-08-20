@@ -25,9 +25,6 @@ outputs:
   app_name: 
     description: "app or service name"
     value: ${{ steps.get-settings.outputs.app_name }}
-  prefix:
-    description: "env prefix"
-    value: ${{ steps.get-settings.outputs.env_prefix }}
 
 runs:
   using: 'composite'

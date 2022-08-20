@@ -17,7 +17,7 @@ venv: setup.py
 	$(BIN)/pip install -e .
 
 build: ## create a release
-build: setup.py
+build: setup.py src/yamlcfg/*.py
 	$(BIN)/python setup.py sdist
 
 

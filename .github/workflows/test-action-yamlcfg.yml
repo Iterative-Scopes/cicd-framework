@@ -25,7 +25,5 @@ jobs:
           test "${{ steps.unittest.outputs.aws_role }}" == "github-test"
           echo "aws region: ${{ steps.unittest.outputs.aws_region }}"
           test "${{ steps.unittest.outputs.aws_region }}" == "global-east"
-          echo "env prefix: ${{ steps.unittest.outputs.env_prefix }}"
-          test "${{ steps.unittest.outputs.env_prefix }}" == "dev"
           echo "app name: ${{ steps.unittest.outputs.app_name }}"
           test "${{ steps.unittest.outputs.app_name }}" == "cicd-test-action"
