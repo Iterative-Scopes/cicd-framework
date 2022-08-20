@@ -9,7 +9,7 @@ def main():
 
     print(f"::set-output name=aws_account::{my_output}")
     print(f"::set-output name=aws_role::{my_output}")
-
+    os.environ["IS_AWS_ACCOUNT"] = my_output
 
 if __name__ == "__main__":
     main()
