@@ -1,0 +1,17 @@
+# app info
+application:
+  name: myapp
+
+# aws account info per env
+aws:
+  dev:
+    account: 12313213
+    region: global-east
+  qa:
+    account: 90232822
+    region: global-west
+
+role:
+  build: github-build
+  deploy: github-deploy
+  test: github-test

@@ -12,10 +12,20 @@ jobs:
         id: unittest
         uses: Iterative-Scopes/cicd-framework/actions/yamlcfg@ISOPS-533-aws-settings
         with:
-          is_env: dev
-          mode: build
+          env: dev
+          role: test
+          config: "$GITHUB_WORKSPACE/.cicd-cfg.yml"
+
 
       - name: Check outputs
         run: |
-          echo "${{ steps.unittest.outputs.aws_account }}"
-          test "${{ steps.unittest.outputs.aws_account }}" == "[dev]-[build]"
+          echo "aws account: ${{ steps.unittest.outputs.aws_account }}"
+          test ${{ steps.unittest.outputs.aws_account == "12313213" }}
+          echo "aws role: ${{ steps.unittest.outputs.aws_role }}"
+          test ${{ steps.unittest.outputs.aws_role == "github-test" }}
+          echo "aws region: ${{ steps.unittest.outputs.aws_region }}"
+          test ${{ steps.unittest.outputs.aws_region == "global-east" }}
+          echo "env prefix: ${{ steps.unittest.outputs.env_prefix }}"
+          test ${{ steps.unittest.outputs.env_prefix == "dev" }}
+          echo "app name: ${{ steps.unittest.outputs.app_name }}"
+          test ${{ steps.unittest.outputs.app_name == "cicd-test-action" }}

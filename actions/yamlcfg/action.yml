@@ -1,39 +1,46 @@
 name: "Yaml configuration"
 description: "read IS CI/CD yaml configuration"
 inputs:
-  is_env:
-    description: "is environment"
+  env:
+    description: "environment running cicd workflow"
     required: true
-  mode:
-    description: "action mode, build, deploy or test"
+  role:
+    description: "auth role for cicd workflow"
     required: false
     default: build
+  config:
+    description: "configuration for cicd workflow"
+    required: true
 
 outputs:
   aws_account:
-    description: "Output from the action"
+    description: "aws account in given env"
     value: ${{ steps.get-settings.outputs.aws_account }}
-  aws_role:
-    description: "Output from the action"
+  aws_role: 
+    description: "aws role in given env" 
+    value: ${{ steps.get-settings.outputs.aws_role }}
+  aws_region: 
+    description: "aws region in given env"
+    value: ${{ steps.get-settings.outputs.aws_region }}
+  app_name: 
+    description: "app or service name"
+    value: ${{ steps.get-settings.outputs.app_name }}
+  prefix:
+    description: "env prefix"
+    value: ${{ steps.get-settings.outputs.env_prefix }}
 
 runs:
   using: 'composite'
   steps:
-    - name: Install Python
+    - name: set Python
       uses: actions/setup-python@v4
       with:
         python-version: '3.9'  
 
-    #- name: Install Dependencies
-    #  run: pip install -r requirements.txt
-    #  shell: bash
-    - name: pass Inputs to python script
+    - name: get CI/CD environment settings
+      id: get-settings
       shell: bash
       run: |
-        echo "IS_ENV=${{ inputs.is_env }}" >> $GITHUB_ENV
-        echo "IS_MODE=${{ inputs.mode }}" >> $GITHUB_ENV
-
-    - name: Fetch the number's square
-      id: get-settings
-      run: python "${{ github.action_path }}/main.py"
-      shell: bash
+        pip install "${{ github.action_path }}/dist/yamlcfg-0.1.0.tar.gz
+        yamlcfg --env ${{ inputs.is_env }} --role ${{ inputs.role }} --cfgfile ${{ inputs.config }}"
+     
