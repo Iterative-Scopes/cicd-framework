@@ -20,12 +20,12 @@ jobs:
       - name: Check outputs
         run: |
           echo "aws account: ${{ steps.unittest.outputs.aws_account }}"
-          test ${{ steps.unittest.outputs.aws_account == "12313213" }}
+          test ${{ steps.unittest.outputs.aws_account }} == "12313213"
           echo "aws role: ${{ steps.unittest.outputs.aws_role }}"
-          test ${{ steps.unittest.outputs.aws_role == "github-test" }}
+          test ${{ steps.unittest.outputs.aws_role }} == "github-test"
           echo "aws region: ${{ steps.unittest.outputs.aws_region }}"
-          test ${{ steps.unittest.outputs.aws_region == "global-east" }}
+          test ${{ steps.unittest.outputs.aws_region }} == "global-east"
           echo "env prefix: ${{ steps.unittest.outputs.env_prefix }}"
-          test ${{ steps.unittest.outputs.env_prefix == "dev" }}
+          test ${{ steps.unittest.outputs.env_prefix }} == "dev"
           echo "app name: ${{ steps.unittest.outputs.app_name }}"
-          test ${{ steps.unittest.outputs.app_name == "cicd-test-action" }}
+          test ${{ steps.unittest.outputs.app_name }} == "cicd-test-action"
