@@ -42,5 +42,5 @@ runs:
       shell: bash
       run: |
         pip install "${{ github.action_path }}/dist/yamlcfg-0.1.0.tar.gz
-        yamlcfg --env ${{ inputs.is_env }} --role ${{ inputs.role }} --cfgfile ${{ inputs.config }}"
+        yamlcfg --env ${{ inputs.env }} --role ${{ inputs.role }} --cfgfile ${{ inputs.config }}"
      
