@@ -18,5 +18,4 @@ jobs:
       - name: Check outputs
         run: |
           echo "${{ steps.unittest.outputs.aws_account }}"
-          echo "${{ env.IS_AWS_ACCOUNT }}sss"
           test "${{ steps.unittest.outputs.aws_account }}" == "[dev]-[build]"

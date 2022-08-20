@@ -12,6 +12,7 @@ inputs:
 outputs:
   aws_account:
     description: "Output from the action"
+    value: ${{ steps.get-settings.outputs.aws_account }}
   aws_role:
     description: "Output from the action"
 
