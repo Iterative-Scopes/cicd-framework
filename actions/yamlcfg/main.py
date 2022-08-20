@@ -2,8 +2,8 @@ import os
 
 
 def main():
-    is_env = os.environ["INPUT_IS_ENV"]
-    mode = os.environ["INPUT_MODE"]
+    is_env = os.environ["IS_ENV"]
+    mode = os.environ["IS_MODE"]
 
     my_output = f"[{is_env}]-[{mode}]"
 
