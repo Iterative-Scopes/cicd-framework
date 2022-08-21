@@ -13,7 +13,7 @@ runs:
   using: "composite"
   steps:
     - name: Configure aws to run integration testing
-      uses: Iterative-Scopes/cicd-framework/actions/connect2awsISOPS-533-aws-settings
+      uses: Iterative-Scopes/cicd-framework/actions/connect2aws@ISOPS-533-aws-settings
       with:
         env: ${{ inputs.env }}
         role: test
