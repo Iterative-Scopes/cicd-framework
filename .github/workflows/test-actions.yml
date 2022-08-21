@@ -3,7 +3,7 @@ on: [push]
 
 jobs:
   # unit test on ymalcfg
-  test-yamlcfg:
+  test-cicdcfg:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -11,22 +11,20 @@ jobs:
 
       - name: test 
         id: unittest
-        uses: Iterative-Scopes/cicd-framework/actions/yamlcfg@ISOPS-533-aws-settings
+        uses: Iterative-Scopes/cicd-framework/actions/cicdcfg@ISOPS-533-aws-settings
         with:
           env: dev
           role: test
-          config: "$GITHUB_WORKSPACE/.cicd-cfg.yml"
+          profile: "$GITHUB_WORKSPACE/.cicd-profile.yml"
 
 
       - name: Check outputs
         run: |
-          echo "aws account: ${{ steps.unittest.outputs.aws_account }}"
           test "${{ steps.unittest.outputs.aws_account }}" == "12313213"
-          echo "aws role: ${{ steps.unittest.outputs.aws_role }}"
-          test "${{ steps.unittest.outputs.aws_role }}" == "github-test"
-          echo "aws region: ${{ steps.unittest.outputs.aws_region }}"
           test "${{ steps.unittest.outputs.aws_region }}" == "global-east"
-          echo "app name: ${{ steps.unittest.outputs.app_name }}"
+          test "${{ steps.unittest.outputs.aws_audience }}" == "sts.amazonaws.com"
+          test "${{ steps.unittest.outputs.aws_role }}" == "github-test"
+          test "${{ steps.unittest.outputs.aws_role_duration }}" == 1800
           test "${{ steps.unittest.outputs.app_name }}" == "cicd-test-action"
   
   # unit testing on build-source

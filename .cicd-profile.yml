@@ -1,0 +1,28 @@
+# app info
+application:
+  name: cicd-test-action
+
+# aws account info per env
+aws:
+  dev:
+    account: 12313213
+    region: global-east
+    audience: sts.amazonaws.com
+  qa:
+    account: 90232822
+    region: global-west
+    audience: sts.amazonaws.com
+
+role:
+  build: 
+    name: github-build
+    duration: 1200
+  deploy: 
+    name: github-deploy
+    duration: 600
+  test: 
+    name: github-test 
+    duration: 1800
+
+
+
