@@ -24,7 +24,7 @@ jobs:
           test "${{ steps.unittest.outputs.aws_region }}" == "global-east"
           test "${{ steps.unittest.outputs.aws_audience }}" == "sts.amazonaws.com"
           test "${{ steps.unittest.outputs.aws_role }}" == "github-test"
-          test "${{ steps.unittest.outputs.aws_role_duration }}" == 1800
+          test "${{ steps.unittest.outputs.aws_role_duration }}" == "1800"
           test "${{ steps.unittest.outputs.app_name }}" == "cicd-test-action"
   
   # unit testing on build-source
