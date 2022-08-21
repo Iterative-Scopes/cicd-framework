@@ -11,14 +11,13 @@ jobs:
       id: aws-configure
       uses: aws-actions/configure-aws-credentials@v1
       env:
-        IS_AWS_ACCOUNT: ${{ secrets.IS_AWS_ACCOUNT }}
-        IS_AWS_ASSUME_ROLE: ${{ secrets.IS_AWS_ASSUME_ROLE }}
-        IS_AWS_AUDIENCE: ${{ secrets.IS_AWS_AUDIENCE }}                                                                                                                                   
+        ROLE_ARN: "arn:aws:iam::${{ secrets.IS_AWS_ACCOUNT }}:role/${{ secrets.IS_AWS_ASSUME_ROLE }}"
+        IS_AUDIENCE: "${{ secrets.IS_AWS_AUDIENCE }}"                                                                                                                             
       with:
-        role-to-assume: arn:aws:iam::$IS_AWS_ACCOUNT:role/$IS_AWS_ASSUME_ROLE
+        role-to-assume: $ROLE_ARN
         role-duration-seconds: 60
         aws-region: us-east-1
-        audience: $IS_AWS_AUDIENCE
+        audience: $IS_AUDIENCE
   # unit test on cicdcfg
   test-cicdcfg:
     runs-on: ubuntu-latest
