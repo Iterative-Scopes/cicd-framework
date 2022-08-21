@@ -16,6 +16,7 @@ jobs:
         aws-region: us-east-1
         audience: ${{ secrets.IS_AWS_AUDIENCE }}
 
+
   # unit test on cicdcfg
   test-cicdcfg:
     runs-on: ubuntu-latest
