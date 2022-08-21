@@ -40,7 +40,7 @@ jobs:
         uses: Iterative-Scopes/cicd-framework/actions/build-source@ISOPS-533-aws-settings
         with:
           runtime: python
-          version: 9.3
+          version: 3.9
 
       - name: Test Node 
         uses: Iterative-Scopes/cicd-framework/actions/build-source@ISOPS-533-aws-settings 
