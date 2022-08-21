@@ -21,7 +21,7 @@ outputs:
     value: ${{ steps.get-settings.outputs.aws_role }}
   aws_role_duration: 
     description: "aws role valid in seconds" 
-    value: ${{ steps.get-settings.outputs.aws_role }}
+    value: ${{ steps.get-settings.outputs.aws_role_duration }}
   aws_region: 
     description: "aws region in given env"
     value: ${{ steps.get-settings.outputs.aws_region }}
