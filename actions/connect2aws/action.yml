@@ -8,7 +8,7 @@ inputs:
   role: 
     description: role assumed to used to connect to AWS
     required: true
-  config:
+  profile:
     description: yaml config file 
     required: true
 
@@ -21,12 +21,13 @@ runs:
       with:
         env: ${{ inputs.env }}
         role: ${{ inputs.role }}
-        config: ${{ inputs.config }}
+        config: ${{ inputs.profile }}
 
     - name: Configure AWS credentials
       id: aws-configure
       uses: aws-actions/configure-aws-credentials@v1
       with:
         role-to-assume: arn:aws:iam::${{ steps.aws_settings.outputs.aws_account }}:role/${{ steps.aws_settings.outputs.aws_role }}
+        role-duration-seconds: ${{ steps.aws_settings.outputs.aws_role_duration }}
         aws-region: ${{ steps.aws_settings.outputs.aws_region }}
-        audience: https://github.com/Iterative-Scopes
+        audience: ${{ steps.aws_settings.outputs.aws_audience }}
