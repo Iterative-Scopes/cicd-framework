@@ -1,0 +1,23 @@
+name: Unit test 
+description: "run unit testing on source code after source build in the same runner"
+
+# TBD how to support docker compose
+inputs:
+  ocker-compose:
+    description: docker compose file to compose up 
+    required: false
+
+runs:
+  using: "composite"
+  steps:
+    # Run Unit-test cases  
+    - name: Unit testing
+      shell: bash
+      run: |
+        echo "run unit testing"
+        make unittest
+    # Create unit testing coverage report
+    - name: Generate coverage report 
+      shell: bash
+      run: |
+        echo "publish coverage report -- coming soon!"

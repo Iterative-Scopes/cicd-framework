@@ -1,0 +1,28 @@
+name: integrate testing
+description: "run integrate testing in a given env"
+
+inputs:
+  env:
+    description: environment to run tests
+    required: true
+  profile:
+    description: environment to run tests
+    required: false
+
+runs:
+  using: "composite"
+  steps:
+    - name: Configure aws to run integration testing
+      uses: Iterative-Scopes/cicd-framework/actions/connect2aws
+      with:
+        env: ${{ inputs.env }}
+        role: test
+        profile: ${{ inputs.profile }}
+
+    # Run integration testing  
+    - name: Integration testing
+      shell: bash
+      run: |
+        echo "run integration testing"
+        run: |
+          make integrationtest
