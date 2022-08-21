@@ -21,7 +21,7 @@ runs:
       with:
         env: ${{ inputs.env }}
         role: ${{ inputs.role }}
-        config: ${{ inputs.profile }}
+        profile: ${{ inputs.profile }}
 
     - name: Configure AWS credentials
       id: aws-configure
