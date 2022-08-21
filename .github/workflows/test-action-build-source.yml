@@ -1,8 +1,8 @@
-name: sharable action unit testing
+name: build source unit testing
 on: [push]
 
 jobs:
-  test_yamlcfg:
+ test-build-source:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout

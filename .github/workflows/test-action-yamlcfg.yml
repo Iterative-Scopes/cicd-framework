@@ -2,7 +2,7 @@ name: sharable action unit testing
 on: [push]
 
 jobs:
-  test_yamlcfg:
+  test-yamlcfg:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout

@@ -14,7 +14,7 @@ runs:
   steps:
     # check out if given runtime supported 
     - name: Check runtime ${{ inputs.runtime }}
-      if: ${{ inputs.runtime != python || inputs.runtime != node }}
+      if: ${{ inputs.runtime }} != "python" || ${{ inputs.runtime }} != "node"
       shell: bash
       run: |
         echo "::error::not support runtime ${{ inputs.runtime }}"
@@ -22,14 +22,14 @@ runs:
 
     # Setting python ${{ inputs.version }}  
     - name: Set up Python ${{ inputs.python_version }}
-      if: ${{ inputs.runtime == python }}
+      if: ${{ inputs.runtime }} == "python"
       uses: actions/setup-python@v4
       with:
         python-version: ${{ inputs.version }}
     
     # Setting Node ${{ inputs.version }}
     - name: Set up Node ${{ inputs.version }}
-      if: ${{ inputs.runtime == node }}
+      if: ${{ inputs.runtime ]] == "node"
       uses: actions/setup-node@v3
       with:
         node-version: ${{ inputs.version }}
