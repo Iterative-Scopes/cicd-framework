@@ -10,8 +10,7 @@ inputs:
     required: true
   cfg_file:
     description: yaml config file 
-    required: false
-    default: ${{ env.CFG_FILE }}
+    required: true
 
 runs:
   using: "composite"
