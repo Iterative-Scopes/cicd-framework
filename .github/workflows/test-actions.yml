@@ -2,6 +2,7 @@ name: sharable action unit testing
 on: [push]
 
 jobs:
+  # unit test on ymalcfg
   test-yamlcfg:
     runs-on: ubuntu-latest
     steps:
@@ -27,3 +28,29 @@ jobs:
           test "${{ steps.unittest.outputs.aws_region }}" == "global-east"
           echo "app name: ${{ steps.unittest.outputs.app_name }}"
           test "${{ steps.unittest.outputs.app_name }}" == "cicd-test-action"
+  
+  # unit testing on build-source
+  test-build-source:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Test Python
+        uses: Iterative-Scopes/cicd-framework/actions/build-source@ISOPS-533-aws-settings
+        with:
+          runtime: python
+          version: 9.3
+
+      - name: Test Node 
+        uses: Iterative-Scopes/cicd-framework/actions/build-source@ISOPS-533-aws-settings 
+        with:
+          runtime: node
+          version: 12
+
+      - name: Test un-supported runtime 
+        uses: Iterative-Scopes/cicd-framework/actions/build-source@ISOPS-533-aws-settings 
+        with:
+          runtime: java
+          version: 12
+          continue-on-error: true
