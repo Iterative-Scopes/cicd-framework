@@ -17,7 +17,7 @@ runs:
   steps:      
     - name: Get given environment AWS settings
       id: aws_settings
-      uses: Iterative-Scopes/cicd-framework/actions/yamlcfg@ISOPS-533-aws-settings
+      uses: Iterative-Scopes/cicd-framework/actions/cicdcfg@ISOPS-533-aws-settings
       with:
         env: ${{ inputs.env }}
         role: ${{ inputs.role }}
