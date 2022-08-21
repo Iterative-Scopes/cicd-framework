@@ -8,7 +8,7 @@ inputs:
   role: 
     description: role assumed to used to connect to AWS
     required: true
-  cfg_file:
+  config:
     description: yaml config file 
     required: true
 
@@ -21,11 +21,11 @@ runs:
       with:
         env: ${{ inputs.env }}
         role: ${{ inputs.role }}
-        config: ${{ inputs.cfg_file  }}
+        config: ${{ inputs.config }}
 
     - name: Configure AWS credentials
       id: aws-configure
       uses: aws-actions/configure-aws-credentials@v1
       with:
-        role-to-assume: arn:aws:iam::${{ steps.aws_settings.outputs.aws_account }}:role/${{ steps.aws_settings.outputs.role }}
+        role-to-assume: arn:aws:iam::${{ steps.aws_settings.outputs.aws_account }}:role/${{ steps.aws_settings.outputs.aws_role }}
         aws-region: ${{ steps.aws_settings.outputs.aws_region }}
