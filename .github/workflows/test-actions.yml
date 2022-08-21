@@ -53,4 +53,4 @@ jobs:
         with:
           runtime: java
           version: 12
-          continue-on-error: true
+        continue-on-error: true
