@@ -29,3 +29,4 @@ runs:
       with:
         role-to-assume: arn:aws:iam::${{ steps.aws_settings.outputs.aws_account }}:role/${{ steps.aws_settings.outputs.aws_role }}
         aws-region: ${{ steps.aws_settings.outputs.aws_region }}
+        audience: https://github.com/Iterative-Scopes
