@@ -14,7 +14,7 @@ runs:
   steps:
     # check out if given runtime supported 
     - name: Check runtime ${{ inputs.runtime }}
-      if: ${{ inputs.runtime }} != "python" || ${{ inputs.runtime }} != "node"
+      if: ${{ inputs.runtime }} != "python" && ${{ inputs.runtime }} != "node"
       shell: bash
       run: |
         echo "::error::not support runtime ${{ inputs.runtime }}"

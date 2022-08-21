@@ -9,7 +9,6 @@ jobs:
         uses: actions/checkout@v3
 
       - name: Test Python
-        id: rt-python
         uses: Iterative-Scopes/cicd-framework/actions/build-source@ISOPS-533-aws-settings
         with:
           runtime: python
@@ -26,6 +25,7 @@ jobs:
         with:
           runtime: java
           version: 12
+          continue-on-error: true
 
       
 
