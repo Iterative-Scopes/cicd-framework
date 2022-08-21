@@ -1,0 +1,32 @@
+name: Connect to AWS
+description: connect to AWS account associated with a given environment 
+
+inputs:
+  env:
+    description: environment running on workflow
+    required: true
+  role: 
+    description: role assumed to used to connect to AWS
+    required: true
+  cfg_file:
+    description: yaml config file 
+    required: false
+    default: ${{ env.CFG_FILE }}
+
+runs:
+  using: "composite"
+  steps:      
+    - name: Get given environment AWS settings
+      id: aws_settings
+      uses: Iterative-Scopes/cicd-framework/actions/yamlcfg@ISOPS-533-aws-settings
+      with:
+        env: ${{ inputs.env }}
+        role: ${{ inputs.role }}
+        config: ${{ inputs.cfg_file  }}
+
+    - name: Configure AWS credentials
+      id: aws-configure
+      uses: aws-actions/configure-aws-credentials@v1
+      with:
+        role-to-assume: arn:aws:iam::${{ steps.aws_settings.outputs.aws_account }}:role/${{ steps.aws_settings.outputs.role }}
+        aws-region: ${{ steps.aws_settings.outputs.aws_region }}
