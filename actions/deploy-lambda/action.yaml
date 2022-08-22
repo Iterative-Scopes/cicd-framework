@@ -5,6 +5,9 @@ inputs:
   env:
     description: environment hosting lambda 
     required: true
+  profile:
+    description: environment profile 
+    required: true
   lambda: 
     description: lambda name
     required: true
@@ -22,6 +25,7 @@ runs:
           env: ${{ inputs.env }}
           role: deploy
           profile: ${{ inputs.profile }}
+
       - name: Configure AWS credentials
         id: aws-configure
         uses: aws-actions/configure-aws-credentials@v1
@@ -37,7 +41,7 @@ runs:
         id: get-image-uri
         with: 
           aws_region: ${{ steps.app_settings.outputs.aws_region }}
-          ecr_repository: ${{ steps.app_settings.outputs.app_repository }}
+          repository: ${{ steps.app_settings.outputs.app_repository }}
           image_tag: ${{ inputs.package_ref }} 
 
       - name: update container lambda - update lambda with image uri
@@ -48,14 +52,14 @@ runs:
           aws lambda update-function-code --function-name ${{ inputs.lambda }} --image-uri ${{ steps.get-image-uri.outputs.uri }}
   
       - name: update lambda with S3
-        if: ${{ inputs.s3_uri }}
+        if: ${{ inputs.package_ref }}
         shell: bash
         run: |
-          echo "update lambda with [${{ inputs.s3_uri }}] --- coming soon"
+          echo "update lambda with [${{ inputs.package_ref }}] --- coming soon"
       
       - name: update lambda with zip file
-        if: ${{ inputs.zip_file }}
+        if: ${{ inputs.package_ref }}
         shell: bash
         run: |
-          echo "update lambda with zip file [${{ inputs.zip_file }}] --- coming soon"
+          echo "update lambda with zip file [${{ inputs.package_ref }}] --- coming soon"
          

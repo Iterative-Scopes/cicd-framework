@@ -5,7 +5,7 @@ inputs:
   aws_region:
     description: aws region
     required: true
-  ecr_repository:
+  repository:
     description: aws repository
     required: true
   image_tag: 
@@ -32,7 +32,7 @@ runs:
           REGISTRY: ${{ steps.login-ecr.outputs.registry }}
         shell: bash
         run: |
-          echo IMG_SHA=$(aws ecr describe-images --repository-name ${{ inputs.ecr_repository }} --image-ids imageTag=${{ inputs.image_tag }} | jq -r '.imageDetails[0] | .imageDigest') >> $GITHUB_ENV
+          echo IMG_SHA=$(aws ecr describe-images --repository-name ${{ inputs.repository }} --image-ids imageTag=${{ inputs.image_tag }} | jq -r '.imageDetails[0] | .imageDigest') >> $GITHUB_ENV
       
       - name: setup image URI
         id: set-uri
@@ -40,9 +40,9 @@ runs:
         run: |
           if [ ${{ env.IMG_SHA }} == "null" ]; 
           then 
-            echo "cannot get image [${{ inputs.ecr_repository }}:${{ inputs.image_tag }}] metadata";
-            aws ecr describe-images --repository-name ${{ inputs.ecr_repository }} --image-ids imageTag=${{ inputs.image_tag }};
+            echo "cannot get image [${{ inputs.repository }}:${{ inputs.image_tag }}] metadata";
+            aws ecr describe-images --repository-name ${{ inputs.repository }} --image-ids imageTag=${{ inputs.image_tag }};
             exit 1;
           fi;
           echo "image sha = ${{ env.IMG_SHA }}" 
-          echo "::set-output name=uri::${{ steps.login-ecr.outputs.registry }}/${{ inputs.ecr_repository }}@${{ env.IMG_SHA }}"
+          echo "::set-output name=uri::${{ steps.login-ecr.outputs.registry }}/${{ inputs.repository }}@${{ env.IMG_SHA }}"
