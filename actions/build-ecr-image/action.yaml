@@ -31,7 +31,7 @@ runs:
       - name: Build, tag, and push image to Amazon ECR
         id: erc-image
         env:
-          REMOTE_REGISTRY: ${{ steps.login-ecr.outputs.registry }}/${{ inputs.ecr_repository }}
+          REMOTE_REGISTRY: ${{ steps.login-ecr.outputs.registry }}/${{ inputs.repository }}
           IMAGE_TAG: ${{ github.ref_name }}
         shell: bash
         run: |
