@@ -21,6 +21,7 @@ on:
         type: string
       ecr_repository:
         description: ecr repository
+        required: false
         type: string
         default: default
 

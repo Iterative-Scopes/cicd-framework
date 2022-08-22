@@ -1,0 +1,34 @@
+name: Automerge the PR when all requirements met.
+
+on:
+  workflow_call:
+
+jobs:
+	automerge:
+		runs-on: ubuntu-latest  
+		steps:
+			- uses: actions/checkout@v3
+          
+			- name: Retrieve Secrets
+				id: secrets
+				uses: t-botz/aws-secrets-manager-read-action@v2
+				env: 
+					AWS_REGION: ${{ inputs.aws_region }}
+				with:
+					secret-id: github_actions_gh_token
+					keys-as-env-vars: true
+					keys-as-outputs: true
+					append-to-env-file: ./my.env
+		 
+			- name: Automatically Merge PR
+				uses: ./
+				with:
+					# GitHub WebHook Secret Token
+					github-token: ${{ secrets.GITHUB_TOKEN }}
+					# The number of reviewers to automatically merge. Default is 1.
+					min-approvals: 3
+					# The merge method ("merge", "squash", "rebase"). Default is "merge"
+					merge-method: merge
+					# Let the bot delete the merged branch. true or false.
+					auto-delete: false
+					dry-run: true 
