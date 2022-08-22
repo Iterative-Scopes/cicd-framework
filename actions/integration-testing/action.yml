@@ -6,8 +6,8 @@ inputs:
     description: environment to run tests
     required: true
   profile:
-    description: environment to run tests
-    required: false
+    description: cicd profile
+    required: true
 
 runs:
   using: "composite"

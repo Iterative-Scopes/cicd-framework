@@ -2,17 +2,11 @@ name: build ecr image
 description: build a container image and push to ecr, return image tag
 
 inputs:
-  aws_account:
-    description: aws account
-    required: true
-  aws_role:
-    description: aws role
-    required: true
   aws_region:
     description: aws region
     required: true
-  ecr_repository:
-    description: aws repository
+  repository:
+    description: aws ecr repository
     required: true
   make_cmd: 
     description: make command
@@ -24,15 +18,10 @@ outputs:
     description: image tag
     value: ${{ steps.erc-image.outputs.tag }}
 
+# assume caller has connect to AWS account
 runs:
     using: "composite"
-    steps: 
-      - name: Connect to AWS 
-        uses: Iterative-Scopes/cicd-framework/actions/aws-login@main
-        with:
-          aws_region: ${{ inputs.aws_region }}  
-          role_arn: arn:aws:iam::${{ inputs.aws_account }}:role/${{ inputs.aws_role }}
-    
+    steps:     
       - name: Login to Amazon ECR
         id: login-ecr
         uses: aws-actions/amazon-ecr-login@v1

@@ -2,56 +2,43 @@ name: deploy lambda
 description: update lambda with container, S3 or zip 
 
 inputs:
-  aws_account:
-    description: aws account
-    required: true
-  aws_role:
-    description: aws role
-    required: true
-  aws_region:
-    description: aws region
+  env:
+    description: environment hosting lambda 
     required: true
   lambda: 
     description: lambda name
     required: true
-
-# lambda container for lambda code
-  ecr_repository:
-    description: aws repository
-    required: false
-  image_tag: 
-    description: ecr container image tag
-    default: latest
-    required: false
-# S3 uri for lambda code  
-  s3_uri:
-    description: S3 uri
-    required: false
-
-# zip file path for lambda code  
-  zip_file:
-    description: zip file path
-    required: false
+  package_ref: 
+    description: lambda package ref from lambda build job
+    required: true
 
 runs:
     using: "composite"
     steps: 
-      - name: connect to AWS 
-        uses: Iterative-Scopes/cicd-framework/actions/aws-login@main
+      - name: Get given application settings
+        id: app_settings
+        uses: Iterative-Scopes/cicd-framework/actions/cicdcfg@ISOPS-533-aws-settings
         with:
-          aws_region: ${{ inputs.aws_region }}  
-          role_arn: arn:aws:iam::${{ inputs.aws_account }}:role/${{ inputs.aws_role }}
-      
+          env: ${{ inputs.env }}
+          role: deploy
+          profile: ${{ inputs.profile }}
+      - name: Configure AWS credentials
+        id: aws-configure
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          role-to-assume: arn:aws:iam::${{ steps.app_settings.outputs.aws_account }}:role/${{ steps.app_settings.outputs.aws_role }}
+          role-duration-seconds: ${{ steps.app_settings.outputs.aws_role_duration }}
+          aws-region: ${{ steps.app_settings.outputs.aws_region }}
+          audience: ${{ steps.app_settings.outputs.aws_audience }}
+
       - name: update container lambda - get image uri with given image tag
-        if: ${{ inputs.ecr_repository &&  inputs.image_tag }}
+        if: ${{ steps.app_settings.outputs.app_registry == 'ecr' }}
         uses: Iterative-Scopes/cicd-framework/actions/get-ecr-image-uri@main
         id: get-image-uri
         with: 
-          aws_account: ${{ inputs.aws_account }}
-          aws_role: ${{ inputs.aws_role }}
-          aws_region: ${{ inputs.aws_region }}
-          ecr_repository: ${{ inputs.ecr_repository }}
-          image_tag: ${{ inputs.image_tag }} 
+          aws_region: ${{ steps.app_settings.outputs.aws_region }}
+          ecr_repository: ${{ steps.app_settings.outputs.app_repository }}
+          image_tag: ${{ inputs.package_ref }} 
 
       - name: update container lambda - update lambda with image uri
         if: ${{ steps.get-image-uri.outputs.uri }}

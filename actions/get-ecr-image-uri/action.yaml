@@ -2,12 +2,6 @@ name: ecr image uri
 description: get ecr image by image tag after aws authentication
 
 inputs:
-  aws_account:
-    description: aws account
-    required: true
-  aws_role:
-    description: aws role
-    required: true
   aws_region:
     description: aws region
     required: true
