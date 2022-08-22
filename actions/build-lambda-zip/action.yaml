@@ -30,4 +30,4 @@ runs:
       shell: bash
       run: |
         echo "push zip..."
-        echo "::set-output name=zip_uri::"s3://${{ inputs.s3 }}/${{ inputs.repository }}"
+        echo "::set-output name=zip_uri::s3://${{ inputs.s3 }}/${{ inputs.repository }}"
