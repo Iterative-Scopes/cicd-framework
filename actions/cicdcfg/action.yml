@@ -31,6 +31,12 @@ outputs:
   app_name: 
     description: "app or service name"
     value: ${{ steps.get-settings.outputs.app_name }}
+  app_registry: 
+    description: "app or service name"
+    value: ${{ steps.get-settings.outputs.app_registry }}
+  app_repository: 
+    description: "app or service name"
+    value: ${{ steps.get-settings.outputs.app_repository }}
 
 runs:
   using: 'composite'

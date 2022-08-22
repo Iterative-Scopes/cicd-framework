@@ -9,3 +9,7 @@ load CI/CD pipeline profile for given environment settings
 
 ## usage 
 - `cicdcfg --env dev --role build --profile full-path`
+
+## test on repo
+- `cicdcfg --env dev --role build --profile $PWD/.cicd-profile.yml`
+- check outputs 
