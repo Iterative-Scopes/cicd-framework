@@ -24,6 +24,8 @@ def get_settings(env, role, profile):
         print(f"::set-output name=aws_role::{cfg['role'][role]['name']}")
         print(f"::set-output name=aws_role_duration::{cfg['role'][role]['duration']}")
         print(f"::set-output name=app_name::{cfg['application']['name']}")
+        print(f"::set-output name=app_registry::{cfg['application']['package']['registry']}")
+        print(f"::set-output name=app_repository::{cfg['application']['package']['repository']}")
     except KeyError as e:
         print(f"Incorrect key value [{e}]")
         return 3

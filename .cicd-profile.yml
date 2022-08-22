@@ -1,6 +1,9 @@
 # app info
 application:
-  name: cicd-test-action
+  name: cicd-test-action  # name of application
+  package:                # artifact package type and name
+    registry: ecr         # ecr or s3 bucket name
+    repository: cicd-framework # ecr repository or s3 folder
 
 # aws account info per env
 aws:

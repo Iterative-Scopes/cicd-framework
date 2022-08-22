@@ -25,6 +25,8 @@ jobs:
           test "${{ steps.unittest.outputs.aws_role }}" == "github-test"
           test "${{ steps.unittest.outputs.aws_role_duration }}" == "1800"
           test "${{ steps.unittest.outputs.app_name }}" == "cicd-test-action"
+          test "${{ steps.unittest.outputs.app_registry }}" == "ecr"
+          test "${{ steps.unittest.outputs.app_repository }}" == "cicd-framework"
   
   # unit testing on build-source
   test-build-source:
