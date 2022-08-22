@@ -8,9 +8,6 @@ inputs:
   profile:
     description: environment profile 
     required: true
-  lambda: 
-    description: lambda name
-    required: true
   package_ref: 
     description: lambda package ref from lambda build job
     required: true
@@ -37,7 +34,7 @@ runs:
 
       - name: update container lambda - get image uri with given image tag
         if: ${{ steps.app_settings.outputs.app_registry == 'ecr' }}
-        uses: Iterative-Scopes/cicd-framework/actions/get-ecr-image-uri@main
+        uses: Iterative-Scopes/cicd-framework/actions/get-ecr-image-uri@ISOPS-533-aws-settings
         id: get-image-uri
         with: 
           aws_region: ${{ steps.app_settings.outputs.aws_region }}
