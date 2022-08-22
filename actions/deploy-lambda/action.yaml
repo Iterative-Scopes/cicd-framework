@@ -11,6 +11,7 @@ inputs:
   package_ref: 
     description: lambda package ref from lambda build job
     required: true
+    default: "null"
 
 runs:
     using: "composite"
@@ -23,6 +24,16 @@ runs:
           role: deploy
           profile: ${{ inputs.profile }}
 
+      - name: Validate package ref and setup lambda name
+        shell: bash
+        run: |
+          echo LAMBDA_NAME=${{ inputs.env }}-${{ steps.app_settings.outputs.app_name }} >> $GITHUB_ENV
+          if [ ${{ env.LAMBDA_NAME }} == "null" || ${{ inputs.package_ref }} == "null" ]; 
+          then
+            echo "Missing package ref [${{ inputs.package_ref }}] or lambda name: [${{ env.LAMBDA_NAME }}]";
+            exit 128;
+          fi;
+
       - name: Configure AWS credentials
         id: aws-configure
         uses: aws-actions/configure-aws-credentials@v1
@@ -32,7 +43,7 @@ runs:
           aws-region: ${{ steps.app_settings.outputs.aws_region }}
           audience: ${{ steps.app_settings.outputs.aws_audience }}
 
-      - name: update container lambda - get image uri with given image tag
+      - name: Update container lambda - get image uri with given image tag
         if: ${{ steps.app_settings.outputs.app_registry == 'ecr' }}
         uses: Iterative-Scopes/cicd-framework/actions/get-ecr-image-uri@ISOPS-533-aws-settings
         id: get-image-uri
@@ -41,22 +52,18 @@ runs:
           repository: ${{ steps.app_settings.outputs.app_repository }}
           image_tag: ${{ inputs.package_ref }} 
 
-      - name: update container lambda - update lambda with image uri
-        if: ${{ steps.get-image-uri.outputs.uri }}
+      - name: Update container lambda - update lambda with image uri
+        if: ${{ steps.app_settings.outputs.app_registry == 'ecr' && 
+              steps.get-image-uri.outputs.uri }}
         shell: bash
         run: |
           echo ${{ steps.get-image-uri.outputs.uri }}
-          aws lambda update-function-code --function-name ${{ inputs.lambda }} --image-uri ${{ steps.get-image-uri.outputs.uri }}
+          aws lambda update-function-code --function-name ${{ env.LAMBDA_NAME }} --image-uri ${{ steps.get-image-uri.outputs.uri }}
+          exit 0
   
-      - name: update lambda with S3
-        if: ${{ inputs.package_ref }}
+      - name: Update lambda from S3 registry
+        if: contains(${{ steps.app_settings.outputs.app_registry}}, "s3:::")
         shell: bash
         run: |
           echo "update lambda with [${{ inputs.package_ref }}] --- coming soon"
-      
-      - name: update lambda with zip file
-        if: ${{ inputs.package_ref }}
-        shell: bash
-        run: |
-          echo "update lambda with zip file [${{ inputs.package_ref }}] --- coming soon"
-         
+          exit 0
