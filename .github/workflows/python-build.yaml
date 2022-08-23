@@ -1,4 +1,4 @@
-name: python build and publish container artifact
+name: python build and publish container artifact on PR checks 
 
 on:
   workflow_call:
