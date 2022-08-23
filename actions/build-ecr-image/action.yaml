@@ -23,7 +23,7 @@ runs:
     using: "composite"
     steps:
       - name: Connect to AWS 
-        uses: Iterative-Scopes/cicd-framework/actions/aws-login@main
+        uses: Iterative-Scopes/cicd-framework/actions/aws-login@ISOPS-548
         with:
             AWS_REGION: ${{ inputs.aws_region }}  
             role_arn: arn:aws:iam::${{ inputs.aws_account }}:role/${{ inputs.aws_role }}     
