@@ -2,6 +2,23 @@ name: Automerge the PR when all requirements met.
 
 on:
 	workflow_call:
+	    inputs:
+      python_version:
+        description: python version
+        required: true
+        type: string
+      aws_account:
+        description: aws account
+        required: true
+        type: string
+      aws_role:
+        description: aws role
+        required: true
+        type: string
+      aws_region:
+        description: aws region
+        required: true
+        type: string
 
 jobs:
 	build:
