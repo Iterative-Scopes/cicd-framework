@@ -41,7 +41,6 @@ jobs:
           keys-as-env-vars: true
           keys-as-outputs: true
           append-to-env-file: ./my.env
-          AWS_REGION: ${{ inputs.aws_region }}
       - name: Automatically Merge PR
         uses: Iterative-Scopes/cicd-framework/actions/pr-merge@ISOPS-532-pr-checks
         with:
