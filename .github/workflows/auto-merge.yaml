@@ -1,31 +1,36 @@
 name: auto-merge
 
 on:
-	workflow_call:
-		inputs:
-			python_version:
-				description: python version
-				required: true
-				type: string
-			aws_account:
-				description: aws account
-				required: true
-				type: string
-			aws_role:
-				description: aws role
-				required: true
-				type: string
-			aws_region:
-				description: aws region
-				required: true
-				type: string
+  workflow_call:
+    inputs:
+      python_version:
+        description: python version
+        required: true
+        type: string
+      aws_account:
+        description: aws account
+        required: true
+        type: string
+      aws_role:
+        description: aws role
+        required: true
+        type: string
+      aws_region:
+        description: aws region
+        required: true
+        type: string
+      ecr_repository:
+        description: ecr repository
+        required: false
+        type: string
+        default: default
 
 jobs:
-	build:
-		runs-on: ubuntu-latest
-		steps: 
-			- name: Checkout
-				uses: actions/checkout@v3
+  merge:
+    runs-on: ubuntu-latest
+    steps: 
+      - name: Checkout
+        uses: actions/checkout@v3
 
 			- name: Retrieve Secrets
 				id: secrets
