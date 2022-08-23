@@ -19,7 +19,7 @@ on:
         description: aws region
         required: true
         type: string
-      ecr_repository:
+      repository:
         description: ecr repository
         required: true
         type: string
@@ -44,7 +44,7 @@ jobs:
           aws_account: ${{ inputs.aws_account }}
           aws_role: ${{ inputs.aws_role }}
           aws_region: ${{ inputs.aws_region }}
-          ecr_repository: ${{ inputs.ecr_repository }}
+          repository: ${{ inputs.repository }}
           make_cmd: cpu
 
       - name: gpu-build-test  
@@ -58,5 +58,5 @@ jobs:
           aws_account: ${{ inputs.aws_account }}
           aws_role: ${{ inputs.aws_role }}
           aws_region: ${{ inputs.aws_region }}
-          ecr_repository: ${{ inputs.ecr_repository }}
+          repository: ${{ inputs.repository }}
           make_cmd: gpu
