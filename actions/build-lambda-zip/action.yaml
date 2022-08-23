@@ -1,0 +1,33 @@
+name: build lambda package
+description: build lambda package, return zip uri
+
+inputs:
+  registry:
+    description: s3 bucket name as lambda zip registry 
+    required: true
+  repository:
+    description: name of package
+    required: true
+
+outputs:
+  zip_uri:
+    description: lambda package ref, ecr tag or zip file name
+    value: ${{ steps.push-zip.outputs.zip_uri }}
+
+# assume caller has connect to AWS account
+runs:
+    using: "composite"
+    steps: 
+    - name: Build lambda zip 
+      id: build-zip
+      shell: bash
+      run: |
+        echo "build zip..."
+        make build
+
+    - name: Push to lambda registry s3
+      id: push-zip
+      shell: bash
+      run: |
+        echo "push zip..."
+        echo "::set-output name=zip_uri::s3://${{ inputs.s3 }}/${{ inputs.repository }}"

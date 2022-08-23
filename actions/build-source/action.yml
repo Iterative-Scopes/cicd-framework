@@ -1,0 +1,51 @@
+name: Build source code
+description: "build and lint source code on checkout branch/tag"
+
+inputs:
+  runtime: 
+    description: runtime used in source code build
+    required: true
+  version:
+    description: runtime version
+    required: true
+  
+runs:
+  using: "composite"
+  steps:
+    # check out if given runtime supported 
+    - name: Check runtime
+      if: ${{ inputs.runtime != 'python' && inputs.runtime != 'node' }}
+      shell: bash
+      run: |
+        echo "::error::not support runtime ${{ inputs.runtime }}"
+        exit 128
+
+    # Setting python ${{ inputs.version }}  
+    - name: Set up Python ${{ inputs.python_version }}
+      if: ${{ inputs.runtime == 'python' }}
+      uses: actions/setup-python@v4
+      with:
+        python-version: ${{ inputs.version }}
+    
+    # Setting Node ${{ inputs.version }}
+    - name: Set up Node ${{ inputs.version }}
+      if: ${{ inputs.runtime == 'node' }}
+      uses: actions/setup-node@v3
+      with:
+        node-version: ${{ inputs.version }}
+
+    # Create Virtual Environment    
+    - name: Create virtual env
+      shell: bash
+      run: make venv
+
+    # Check source code for programmatic and stylistic errors
+    - name: Linting
+      shell: bash
+      run: make lint
+    
+    # Build package to be pushed to package registry
+    - name: Build Package
+      shell: bash
+      run: make build
+  

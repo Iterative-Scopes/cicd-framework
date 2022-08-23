@@ -1,0 +1,65 @@
+name: sharable action unit testing
+on: [push]
+
+jobs:
+  # unit test on cicdcfg
+  test-cicdcfg:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: test 
+        id: unittest
+        uses: Iterative-Scopes/cicd-framework/actions/cicdcfg@ISOPS-533-aws-settings
+        with:
+          env: dev
+          role: test
+          profile: "$GITHUB_WORKSPACE/.cicd-profile.yml"
+
+      - name: Check outputs
+        run: |
+          test "${{ steps.unittest.outputs.aws_account }}" == "12313213"
+          test "${{ steps.unittest.outputs.aws_region }}" == "global-east"
+          test "${{ steps.unittest.outputs.aws_audience }}" == "sts.amazonaws.com"
+          test "${{ steps.unittest.outputs.aws_role }}" == "github-test"
+          test "${{ steps.unittest.outputs.aws_role_duration }}" == "1800"
+          test "${{ steps.unittest.outputs.app_name }}" == "cicd-test-action"
+          test "${{ steps.unittest.outputs.app_registry }}" == "ecr"
+          test "${{ steps.unittest.outputs.app_repository }}" == "cicd-framework"
+  
+  # unit testing on build-source
+  test-build-source:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Test Python
+        uses: Iterative-Scopes/cicd-framework/actions/build-source@ISOPS-533-aws-settings
+        with:
+          runtime: python
+          version: 3.9
+
+      - name: Test Node 
+        uses: Iterative-Scopes/cicd-framework/actions/build-source@ISOPS-533-aws-settings 
+        with:
+          runtime: node
+          version: 12
+
+      - name: Test un-supported runtime 
+        uses: Iterative-Scopes/cicd-framework/actions/build-source@ISOPS-533-aws-settings 
+        with:
+          runtime: java
+          version: 12
+        continue-on-error: true
+
+  # unit testing on unit testing
+  test-unit-testing:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Run unit tests
+        uses: Iterative-Scopes/cicd-framework/actions/unit-testing@ISOPS-533-aws-settings
