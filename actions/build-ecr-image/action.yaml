@@ -21,7 +21,12 @@ outputs:
 # assume caller has connect to AWS account
 runs:
     using: "composite"
-    steps:     
+    steps:
+      - name: Connect to AWS 
+        uses: Iterative-Scopes/cicd-framework/actions/aws-login@main
+        with:
+            AWS_REGION: ${{ inputs.aws_region }}  
+            role_arn: arn:aws:iam::${{ inputs.aws_account }}:role/${{ inputs.aws_role }}     
       - name: Login to Amazon ECR
         id: login-ecr
         uses: aws-actions/amazon-ecr-login@v1
