@@ -1,8 +1,8 @@
-name: Automerge the PR when all requirements met.
+name: auto-merge
 
 on:
-	workflow_call:
-	    inputs:
+  workflow_call:
+    inputs:
       python_version:
         description: python version
         required: true
