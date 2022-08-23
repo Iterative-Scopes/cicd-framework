@@ -31,17 +31,17 @@ jobs:
     steps: 
       - name: Checkout
         uses: actions/checkout@v3
-			- name: Retrieve Secrets
-				id: secrets
-				uses: t-botz/aws-secrets-manager-read-action@v2
-				env: 
-					AWS_REGION: ${{ inputs.aws_region }}
-				with:
-					secret-id: github_actions_gh_token
-					keys-as-env-vars: true
-					keys-as-outputs: true
-					append-to-env-file: ./my.env
-					AWS_REGION: ${{ inputs.aws_region }}
+      - name: Retrieve Secrets
+        id: secrets
+        uses: t-botz/aws-secrets-manager-read-action@v2
+        env: 
+          AWS_REGION: ${{ inputs.aws_region }}
+        with:
+        secret-id: github_actions_gh_token
+        keys-as-env-vars: true
+        keys-as-outputs: true
+        append-to-env-file: ./my.env
+        AWS_REGION: ${{ inputs.aws_region }}
 		 
 			- name: Automatically Merge PR
 				uses: Iterative-Scopes/cicd-framework/actions/pr-merge@ISOPS-532-pr-checks
