@@ -18,7 +18,7 @@ runs:
     steps: 
       - name: Get given application settings
         id: app_settings
-        uses: Iterative-Scopes/cicd-framework/actions/cicdcfg@ISOPS-533-aws-settings
+        uses: Iterative-Scopes/cicd-framework/actions/cicdcfg@main
         with:
           env: ${{ inputs.env }}
           role: deploy
@@ -45,7 +45,7 @@ runs:
 
       - name: Update container lambda - get image uri with given image tag
         if: ${{ steps.app_settings.outputs.app_registry == 'ecr' }}
-        uses: Iterative-Scopes/cicd-framework/actions/get-ecr-image-uri@ISOPS-533-aws-settings
+        uses: Iterative-Scopes/cicd-framework/actions/get-ecr-image-uri@main
         id: get-image-uri
         with: 
           aws_region: ${{ steps.app_settings.outputs.aws_region }}
