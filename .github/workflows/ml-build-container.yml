@@ -23,6 +23,10 @@ on:
         description: ecr repository
         required: true
         type: string
+      ssh_key:
+        description: ssh key
+        required: true
+        type: string  
 
 jobs:
   build:
@@ -30,6 +34,14 @@ jobs:
     steps: 
       - name: Checkout
         uses: actions/checkout@v3
+      
+      - name: Checkout ml-common repo
+        uses: actions/checkout@v3
+        with:
+          repository: Iterative-Scopes/ml-common
+          ref: TJ-149-extended
+          ssh-key: ${{ inputs.ssh_key }}
+          path: ml-common
     
       # use ci/cd framework action python-build
       - name: cpu-build-test  
