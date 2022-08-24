@@ -22,11 +22,7 @@ on:
       repository:
         description: ecr repository
         required: true
-        type: string
-      ssh_key:
-        description: ssh key
-        required: true
-        type: string  
+        type: string 
 
 jobs:
   build:
@@ -35,12 +31,10 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v3
       
-      - name: Checkout ml-common repo
-        uses: actions/checkout@v3
+      - name: Download ml-common artifact 
+        uses: actions/download-artifact@master
         with:
-          repository: Iterative-Scopes/ml-common
-          ref: TJ-149-extended
-          ssh-key: ${{ inputs.ssh_key }}
+          name: ml_common_artifact
           path: ml-common
     
       # use ci/cd framework action python-build
