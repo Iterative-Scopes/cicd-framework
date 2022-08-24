@@ -38,7 +38,7 @@ jobs:
           path: ml-common
       
       - name: Debug artifact
-        run: ls -alt ml-common
+        run: ls -alt ./
     
       # use ci/cd framework action python-build
       - name: cpu-build-test  
