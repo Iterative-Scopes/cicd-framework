@@ -4,6 +4,9 @@ application:
   package:                # artifact package type and name
     registry: ecr         # ecr or s3 bucket name
     repository: cicd-framework # ecr repository or s3 folder
+  runtime:
+    name: python
+    version: 3.9    
 
 # aws account info per env
 aws:
