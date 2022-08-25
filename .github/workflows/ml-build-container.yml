@@ -33,11 +33,11 @@ jobs:
         with:
           clean: false
       
-      # - name: Download ml-common artifact 
-      #   uses: actions/download-artifact@master
-      #   with:
-      #     name: ml_common_artifact
-      #     path: ml-common
+      - name: Download ml-common artifact 
+        uses: actions/download-artifact@master
+        with:
+          name: ml_common_artifact
+          path: ml-common
       
       - name: Debug artifact
         run: ls -alt ./
