@@ -27,7 +27,7 @@ jobs:
           test "${{ steps.unittest.outputs.app_name }}" == "cicd-test-action"
           test "${{ steps.unittest.outputs.app_registry }}" == "ecr"
           test "${{ steps.unittest.outputs.app_repository }}" == "cicd-framework"
-          test "${{ steps.unittest.outputs.app_runtime }}" == "go"
+          test "${{ steps.unittest.outputs.app_runtime_name }}" == "go"
           test "${{ steps.unittest.outputs.app_runtime_version }}" == "1.3"
 
   
