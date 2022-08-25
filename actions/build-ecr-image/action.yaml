@@ -11,7 +11,7 @@ inputs:
   make_cmd: 
     description: make command
     default: container
-    required: true
+    required: false
 
 outputs:
   tag:
