@@ -1,0 +1,62 @@
+name: build lambda package
+description: build lambda package, return package ref
+
+inputs:
+  env:
+    description: environment to push package
+    required: true
+  profile:
+    description: ci/cd profile 
+    required: true
+
+outputs:
+  package_ref:
+    description: lambda package ref, ecr tag or zip file name
+    value: ${{ steps.set-pkg-ref.outputs.package_ref }}
+
+runs:
+    using: "composite"
+    steps: 
+    - name: Get given application settings
+      id: app_settings
+      uses: Iterative-Scopes/cicd-framework/actions/cicdcfg@main
+      with:
+        env: ${{ inputs.env }}
+        role: build
+        profile: ${{ inputs.profile }}
+    
+    - name: Configure AWS credentials
+      id: aws-configure
+      uses: aws-actions/configure-aws-credentials@v1
+      with:
+        role-to-assume: arn:aws:iam::${{ steps.app_settings.outputs.aws_account }}:role/${{ steps.app_settings.outputs.aws_role }}
+        role-duration-seconds: ${{ steps.app_settings.outputs.aws_role_duration }}
+        aws-region: ${{ steps.app_settings.outputs.aws_region }}
+        audience: ${{ steps.app_settings.outputs.aws_audience }}
+
+    - name: Build ml container
+      id: build-ecr
+      if: ${{ steps.app_settings.outputs.app_registry == 'ecr' }}
+      uses: Iterative-Scopes/cicd-framework/actions/build-ecr-image@main
+      with:
+        aws_region: ${{ steps.app_settings.outputs.aws_region }}
+        repository: ${{ steps.app_settings.outputs.app_repository }}
+
+
+    - name: Set package ref
+      id: set-pkg-ref
+      shell: bash
+      run: |
+          if [ ${{ steps.build-ecr.outputs.tag }} ];
+          then 
+            echo "::set-output name=package_ref::${{ steps.build-ecr.outputs.tag }}"
+            exit 0
+          fi;
+          if [ ${{ steps.build-zip.outputs.zip_uri }} ]
+          then
+             echo "::set-output name=package_ref::${{ steps.build-zip.outputs.zip_uri }}"
+             exit 0
+          fi;
+          echo "::error::missing package ref in building app [ ${{ steps.app_settings.outputs.app_name }}]
+          exit 128
+        
