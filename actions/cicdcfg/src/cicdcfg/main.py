@@ -26,8 +26,8 @@ def get_settings(env, role, profile):
         print(f"::set-output name=app_name::{cfg['application']['name']}")
         print(f"::set-output name=app_registry::{cfg['application']['package']['registry']}")
         print(f"::set-output name=app_repository::{cfg['application']['package']['repository']}")
-        print(f"::set-output name=app_name::{cfg['application']['runtime']['name']}")
-        print(f"::set-output name=app_version::{cfg['application']['runtime']['version']}")
+        print(f"::set-output name=app_runtime::{cfg['application']['runtime']['name']}")
+        print(f"::set-output name=app_runtime_version::{cfg['application']['runtime']['version']}")
 
     except KeyError as e:
         print(f"Incorrect key value [{e}]")
