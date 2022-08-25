@@ -12,10 +12,10 @@ inputs:
 runs:
   using: "composite"
   steps:
-    - name: Checkout
-      uses: actions/checkout@v3
-      with:
-        clean: false
+    # - name: Checkout
+    #   uses: actions/checkout@v3
+    #   with:
+    #     clean: false
     # Setting Python Version  
     - name: Set up Python ${{ inputs.python_version }}
       uses: actions/setup-python@v4

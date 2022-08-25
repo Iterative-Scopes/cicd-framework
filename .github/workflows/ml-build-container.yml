@@ -28,17 +28,17 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps: 
-      - name: Checkout
-        uses: actions/checkout@v3
+      # - name: Checkout
+      #   uses: actions/checkout@v3
       
-      - name: Download ml-common artifact 
-        uses: actions/download-artifact@master
-        with:
-          name: ml_common_artifact
-          path: ml-common
+      # - name: Download ml-common artifact 
+      #   uses: actions/download-artifact@master
+      #   with:
+      #     name: ml_common_artifact
+      #     path: ml-common
       
-      - name: Debug artifact
-        run: ls -alt ./
+      # - name: Debug artifact
+      #   run: ls -alt ./
     
       # use ci/cd framework action python-build
       - name: cpu-build-test  
