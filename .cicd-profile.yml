@@ -11,10 +11,12 @@ aws:
     account: 12313213
     region: global-east
     audience: sts.amazonaws.com
+    sqs_url: sqs_url
   qa:
     account: 90232822
     region: global-west
     audience: sts.amazonaws.com
+    sqs_url: sqs_url
 
 role:
   build: 
