@@ -1,4 +1,4 @@
-name: Create a new rc tag
+name: Create tag
 
 on:
   workflow_dispatch:
@@ -10,14 +10,8 @@ on:
         description: give a message
         required: false
         default: "Auto generated tag"
-      runtime:
-        description: runtime used in source code build
-        required: true
-      version:
-        description: runtime version
-        required: true
 jobs:
-  build:
+  create-tag:
     runs-on: ubuntu-latest
     steps:
       - name: checkout
@@ -40,11 +34,11 @@ jobs:
           git tag -fa "${INPUT_TAG}" -m "${INPUT_TAG_MESSAGE}"
           echo "[action-create-rc-tag] Pushing tag ${INPUT_TAG}"
           git push origin "${INPUT_TAG}"
-      - name: build
-        uses: actions/build-source@main
-        with:
-          runtime: ${{ inputs.runtime }}
-          version: ${{ inputs.version }}
-      - name: unit-test
-        uses: actions/unit-testing@main
-        
+  build:
+    uses:  ./.github/workflows/cicd.wkf-build-lambda.yml
+    with:
+      runtime: python
+      version: 3.9
+      env: "staging"
+      profile: "$GITHUB_WORKSPACE/.cicd-profile.yml"
+      push_package: true
