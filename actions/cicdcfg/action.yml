@@ -40,9 +40,6 @@ outputs:
   app_repository: 
     description: "app or service name"
     value: ${{ steps.get-settings.outputs.app_repository }}
-  sqs_url: 
-    description: "sqs url"
-    value: ${{ steps.get-settings.outputs.sqs_url }}  
 
 runs:
   using: 'composite'
