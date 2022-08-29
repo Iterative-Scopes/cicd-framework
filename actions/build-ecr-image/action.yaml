@@ -47,8 +47,8 @@ runs:
           echo "image tag [$IMAGE_TAG]"
           make ${{ inputs.make_cmd }} remotereg="$REMOTE_REGISTRY" tag="$IMAGE_TAG"
           make ${{ inputs.make_cmd }}test
-          docker push $REMOTE_REGISTRY-cpu:$IMAGE_TAG
-          docker push $REMOTE_REGISTRY-gpu:$IMAGE_TAG
+          docker image ls
+          docker push --all-tags $REMOTE_REGISTRY:$IMAGE_TAG
           echo "set output tag ["$IMAGE_TAG"]"
           echo "::set-output name=tag::"$IMAGE_TAG""
          # make ${{ inputs.make_cmd }}_image_push remotereg="$REMOTE_REGISTRY" tag="$IMAGE_TAG"
