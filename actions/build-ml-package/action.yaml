@@ -19,7 +19,7 @@ runs:
     steps: 
     - name: Get given application settings
       id: app_settings
-      uses: Iterative-Scopes/cicd-framework/actions/cicdcfg@main
+      uses: Iterative-Scopes/cicd-framework/actions/cicdcfg@ISOPS-548
       with:
         env: ${{ inputs.env }}
         role: build
