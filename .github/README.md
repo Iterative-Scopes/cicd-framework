@@ -16,4 +16,3 @@
     - `aws_region` : aws region
     - `ecr_repository` : ECR container image name
  
-
