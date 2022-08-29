@@ -27,7 +27,7 @@ jobs:
           test "${{ steps.unittest.outputs.app_name }}" == "cicd-test-action"
           test "${{ steps.unittest.outputs.app_registry }}" == "ecr"
           test "${{ steps.unittest.outputs.app_repository }}" == "cicd-framework"
-          test "${{ steps.unittest.outputs.sqs_url }}" == "https://sqs.us-east-1.amazonaws.com/691195436300/dev-ml-compute-framework-queue"
+          test "${{ steps.unittest.outputs.sqs_url }}" == "sqs_url"
   
   # unit testing on build-source
   test-build-source:
