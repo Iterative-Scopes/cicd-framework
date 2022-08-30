@@ -37,12 +37,6 @@ outputs:
   app_repository: 
     description: "app or service name"
     value: ${{ steps.get-settings.outputs.app_repository }}
-  app_runtime: 
-    description: "app or service name"
-    value: ${{ steps.get-settings.outputs.app_runtime }}  
-  app_runtime_version: 
-    description: "app or service name"
-    value: ${{ steps.get-settings.outputs.app_runtime_version }}    
 
 runs:
   using: 'composite'
