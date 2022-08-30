@@ -6,7 +6,7 @@ application:
     repository: cicd-framework # ecr repository or s3 folder
   runtime:
     name: go
-    version: 1.3
+    version: 1.4
 
 # aws account info per env
 aws:
