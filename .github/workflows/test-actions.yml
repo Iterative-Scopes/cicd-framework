@@ -72,4 +72,4 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Check Current Ref and get mapped env
-        uses: Iterative-Scopes/cicd-framework/actions/map-ref2env@ISOPS-584-env
+        uses: Iterative-Scopes/cicd-framework/actions/map-ref2env@main
