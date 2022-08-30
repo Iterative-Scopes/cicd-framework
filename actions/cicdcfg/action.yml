@@ -22,9 +22,9 @@ outputs:
   aws_role_duration: 
     description: "aws role valid in seconds" 
     value: ${{ steps.get-settings.outputs.aws_role_duration }}
-  aws_sqs_url: 
+  sqs_url: 
     description: "aws sqs url" 
-    value: ${{ steps.get-settings.outputs.aws_sqs_url }}
+    value: ${{ steps.get-settings.outputs.sqs_url }}
   aws_region: 
     description: "aws region in given env"
     value: ${{ steps.get-settings.outputs.aws_region }}
