@@ -1,0 +1,29 @@
+name: Validate a RC tag
+description: Validate if input tag match the semver scheme
+inputs:
+  tag:
+    required: true
+    type: string
+runs:
+  using: "composite"
+  steps:      
+    - name: Validate a rc tag
+      id: validate-rc-tag
+      shell: bash
+      run: |
+        NAT='0|[1-9][0-9]*'
+        ALPHANUM='[0-9]*[A-Za-z-][0-9A-Za-z-]*'
+        IDENT="$NAT|$ALPHANUM"
+        FIELD='[0-9A-Za-z-]+'
+        SEMVER_REGEX="\
+        ^[vV]?\
+        ($NAT)\\.($NAT)\\.($NAT)\
+        (\\-(${IDENT})(\\.(${IDENT}))*)?\
+        (\\+${FIELD}(\\.${FIELD})*)?$"
+        version=${{inputs.tag}}
+        if [[ "$version" =~ $SEMVER_REGEX ]]; then
+          echo "version $version is OK"
+        else
+          echo "version $version does not match the semver scheme 'X.Y.Z(-PRERELEASE)(+BUILD)'. See help for more information."
+          exit 1
+        fi     
