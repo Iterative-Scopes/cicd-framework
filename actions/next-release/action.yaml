@@ -1,0 +1,72 @@
+name: next release
+description: "Composing the next release version"
+
+inputs:
+  versionincrement:
+    description: increment the MAJOR,MINOR, or the PATCH
+    required: true
+
+outputs:
+  latest_release_version:
+    description: latest release version
+    value: ${{ steps.fetching-latest-release.outputs.latest_release_version }}
+  latest_release_message:
+    description: latest release message
+    value: ${{ steps.fetching-latest-release.outputs.latest_release_message }}
+  next_release_version:
+    description: latest release message
+    value: ${{ steps.composing-next-release.outputs.next_release_version }}
+
+runs:
+  using: "composite"
+  steps:
+    - name: Validate input
+      id: validate-next-release-input
+      shell: bash
+      run: |
+        versionincrement=${{inputs.versionincrement}}
+        possible_value="MAJOR MINOR PATCH"
+        echo $possible_value | grep -w -q $versionincrement
+        if [ $? -eq 1 ]; then
+          echo "Incorrect value provided. Correct values are MAJOR, MINOR or PATCH"
+          exit 1
+        fi
+    - name: Fetching latest release
+      id: fetching-latest-release
+      shell: bash
+      env:
+        GH_TOKEN: ${{ github.token }}
+      run: |
+        latest_release_version=$(gh release list | awk '$2 == "Latest"' | cut -f3)
+        latest_release_message=$(gh release list | awk '$2 == "Latest"' | cut -f1)
+        echo "Latest release found $latest_release_message : $latest_release_version"
+        echo "::set-output name=latest_release_version::"$latest_release_version""
+        echo "::set-output name=latest_release_message::"$latest_release_message""
+    - name: Composing next release
+      id: composing-next-release
+      shell: bash
+      env:
+        LATEST_RELEASE: ${{steps.fetching-latest-release.outputs.latest_release_version}}
+        SEG_TO_BUMP: ${{ inputs.versionincrement }}
+      run: |
+        version_array=( ${LATEST_RELEASE//./ } )
+        if [ "$SEG_TO_BUMP" = "MAJOR" ]
+        then
+          ((version_array[0]++))
+          version_array[1]=0
+          version_array[2]=0
+        fi
+
+        if [ "$SEG_TO_BUMP" = "MINOR" ]
+        then
+          ((version_array[1]++))
+          version_array[2]=0
+        fi
+
+        if [ "$SEG_TO_BUMP" = "PATCH" ]
+        then
+          ((version_array[2]++))
+        fi
+        next_release_version=${version_array[0]}.${version_array[1]}.${version_array[2]}
+        echo "::set-output name=next_release_version::$next_release_version"
+        echo "Computed next release version  $next_release_version"
