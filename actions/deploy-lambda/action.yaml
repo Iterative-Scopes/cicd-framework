@@ -28,7 +28,7 @@ runs:
         shell: bash
         run: |
           echo LAMBDA_NAME=${{ inputs.env }}-${{ steps.app_settings.outputs.app_name }} >> $GITHUB_ENV
-          if [ ${{ env.LAMBDA_NAME }} == "null" || ${{ inputs.package_ref }} == "null" ]; 
+          if [ ${{ $LAMBDA_NAME }} == "null" || ${{ inputs.package_ref }} == "null" ]; 
           then
             echo "Missing package ref [${{ inputs.package_ref }}] or lambda name: [${{ env.LAMBDA_NAME }}]";
             exit 128;
