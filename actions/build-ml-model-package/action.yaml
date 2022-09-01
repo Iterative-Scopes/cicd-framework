@@ -2,9 +2,6 @@ name: build ML model container(s)
 description: build ML model container
 
 inputs:
-  env:
-    description: environment to push package
-    required: true
   profile:
     description: ci/cd profile 
     required: true
@@ -21,7 +18,7 @@ runs:
       id: app_settings
       uses: Iterative-Scopes/cicd-framework/actions/cicdcfg@main
       with:
-        env: ${{ inputs.env }}
+        env: dev
         role: build
         profile: ${{ inputs.profile }}
     
