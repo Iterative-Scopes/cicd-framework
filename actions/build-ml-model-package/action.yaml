@@ -43,9 +43,9 @@ runs:
       id: set-pkg-ref
       shell: bash
       run: |
-          if [ ${{ steps.build-ecr.outputs.tag }} ];
+          if [ ${{ steps.push-ecr.outputs.tag }} ];
           then 
-            echo "::set-output name=package_ref::${{ steps.build-ecr.outputs.tag }}"
+            echo "::set-output name=package_ref::${{ steps.push-ecr.outputs.tag }}"
             exit 0
           fi;
           echo "::error::missing package ref in building app [ ${{ steps.app_settings.outputs.app_name }}]
