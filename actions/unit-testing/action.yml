@@ -3,7 +3,7 @@ description: "run unit testing on source code after source build in the same run
 
 # TBD how to support docker compose
 inputs:
-  ocker-compose:
+  docker-compose:
     description: docker compose file to compose up 
     required: false
 
