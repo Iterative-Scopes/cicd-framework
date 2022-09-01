@@ -92,4 +92,4 @@
 
 ## validate-rc-tag
 - Validate rc tags and checks if input tag match the semver scheme with follwoing input arguments,
-    - `tag`: 'Rc tag name   
+    - `tag`: Rc tag name   
