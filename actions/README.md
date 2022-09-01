@@ -20,7 +20,7 @@
 - build Lambda package (Lambda container and Lambda Zip),
     - if Lambda package == ecr, this action builds Lambda container with follwing input arguments
         - `aws_region` : aws region 
-        - `repository` : ECR image repository name
+        - `repository` : ecr image repository name
         - `env`: environment to push package
     - if Lambda package == Zip, this action builds Lambda Zip with follwing input arguments,
         - `registry` : s3 bucket name
@@ -28,44 +28,44 @@
         - `env`: environment to push package
 
 ## build-lambda-zip
-- build lambda package, return zip uri with folowwing input arguments,
+- build lambda package, return zip uri with folowing input arguments,
     - `registry` : s3 bucket name
     - `repository` : name of the package
 
 ## build-source
 - build and lint source code on branch/tag with following input arguments
     - `runtime`:runtime used in source code build (python|node)
-    - `version`:runtime version  
+    - `version`:runtime version (python_version|node_version)  
 
 ## cicdcfg
--  Reads CI/CD yaml configuration with following input arguments,
+-  Reads CI/CD yaml configuration  with following input arguments,
     - `env`: environment running cicd workflow
-    - `profile`: yaml config file for cicd workflow
+    - `profile`: yaml config file (cicdprofile) for cicd workflow
     - `role`: auth role for cicd workflow,default value: `build` role
 
 ## connect2aws
 - connect to AWS account associated with a given environment with following input arguments,
     - `env`: environment running cicd workflow
-    - `role`: role assumed to used to connect to AWS
-    - `profile`: yaml config file 
+    - `role`: assume role to connect to AWS
+    - `profile`: yaml config file (cicdprofile)
 
 ## deploy-lambda
--  deploys Lambda container with Image or S3 or Zipwith following input arguments,
+-  deploys Lambda container with Image or S3 or Zip with following input arguments,
     - `env`: environment hosting lambda
     - `profile`: environment profile
-    - `package_ref` : Lambda Package reference from Lambda-build job
-    - `role-to-assume` : role assumed to used to connect to AWS
-    - `role-duration-seconds` : duration OIDC provider to directly assume an IAM Role
+    - `package_ref` : lambda Package reference from Lambda-build job
+    - `role-to-assume` : assume role used to connect to AWS
+    - `role-duration-seconds` : duration OIDC provider needs to directly assume an IAM Role
     - `aws-region`: aws region
-    - `repository`: ECR image repository name
+    - `repository`: ecr image repository name
     - `audience`: OpenID connnection client 
 
 ## get-ecr-image-uri
 - gets ecr image by image tag after aws authentication with follwoing input arguments,
     - `aws_region` : aws region 
-    - `repository` : ECR image repository name
+    - `repository` : ecr image repository name
     - `image_tag`: image tag
-    - `registry`: ECR registry
+    - `registry`: ecr registry
 
 ## Integration-testing
 - runs integration testing in a given environment with following input arguments,
@@ -84,7 +84,7 @@
 
 ## python-build
 - runs make file to build, test, lint and coverage reports of the application with input arguments,
-    - `python_version`: Version of the python runtime
+    - `python_version`: runtime python version
 
 ## unit-testing
 - runs unit testing on source code after source build in the same runner with input arguments,
@@ -92,4 +92,4 @@
 
 ## validate-rc-tag
 - Validate rc tags and checks if input tag match the semver scheme with follwoing input arguments,
-    - `tag`: Rc tag name   
+    - `tag`: RC tag name   
