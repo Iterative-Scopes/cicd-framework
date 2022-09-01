@@ -52,29 +52,21 @@ runs:
         version_array=( ${LATEST_RELEASE//./ } )
         if [ "$SEG_TO_BUMP" = "MAJOR" ]
         then
-          echo "I am here : 1"
-          ((version_array[0]++))
-          echo "I am here : 2"
+          (( ++version_array[0] ))
           version_array[1]=0
-          echo "I am here : 3"
           version_array[2]=0
-          echo "I am here : 4"
         fi
 
         if [ "$SEG_TO_BUMP" = "MINOR" ]
         then
-          ((version_array[1]++))
+          (( ++version_array[1] ))
           version_array[2]=0
         fi
 
         if [ "$SEG_TO_BUMP" = "PATCH" ]
         then
-          ((version_array[2]++))
+          (( ++version_array[2] ))
         fi
-        echo "I am here : 5"
         next_release_version=${version_array[0]}.${version_array[1]}.${version_array[2]}
-        echo "I am here : 6"
         echo "::set-output name=next_release_version::$next_release_version"
-        echo "I am here : 7"
         echo "Computed next release version  $next_release_version"
-        echo "I am here : 8"
