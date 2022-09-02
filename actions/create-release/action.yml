@@ -7,12 +7,9 @@ inputs:
   release_name:
     description: 'The name of the release'
     required: true
-  body:
+  release_notes:
     description: 'Text describing the contents of the tag'
     required: false
-  repo:
-    description: 'Repository on which to release'
-    required: false 
 
 outputs:
   id:
