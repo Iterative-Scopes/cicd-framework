@@ -1,0 +1,35 @@
+name: Create Release
+description: Creates release from tag
+inputs:
+  tag_name:
+    description: 'The name of the tag. This should come from the webhook payload, `github.GITHUB_REF` when a user pushes a new tag'
+    required: true
+  release_name:
+    description: 'The name of the release'
+    required: true
+  release_notes:
+    description: 'Text describing the contents of the tag'
+    required: false
+
+outputs:
+  id:
+    description: 'The ID of the created Release'
+    value: ${{ steps.release.outputs.id }}
+  html_url:
+    description: 'The URL users can navigate to in order to view the release'
+    value: ${{ steps.release.outputs.html_url }}
+  upload_url:
+    description: 'The URL for uploading assets to the release'
+    value: ${{ steps.release.outputs.upload_url }} 
+
+runs:
+  using: "composite"
+  steps:      
+    - name: Create Release
+      id: release
+      uses: actions/create-release@v1
+      env:
+        GITHUB_TOKEN: ${{ github.token }} # This token is provided by Actions, you do not need to create your own token
+      with:
+        tag_name: ${{ inputs.tag_name }}
+        release_name: ${{ inputs.release_name }}
