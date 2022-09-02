@@ -14,7 +14,17 @@ inputs:
     description: 'Repository on which to release'
     required: false 
 
- 
+outputs:
+  id:
+    description: 'The ID of the created Release'
+    value: ${{ steps.release.outputs.id }}
+  html_url:
+    description: 'The URL users can navigate to in order to view the release'
+    value: ${{ steps.release.outputs.html_url }}
+  id:
+    description: 'The URL for uploading assets to the release'
+    value: ${{ steps.release.outputs.id }} 
+
 runs:
   using: "composite"
   steps:      
