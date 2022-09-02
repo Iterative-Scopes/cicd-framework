@@ -21,9 +21,9 @@ outputs:
   html_url:
     description: 'The URL users can navigate to in order to view the release'
     value: ${{ steps.release.outputs.html_url }}
-  id:
+  upload_url:
     description: 'The URL for uploading assets to the release'
-    value: ${{ steps.release.outputs.id }} 
+    value: ${{ steps.release.outputs.upload_url }} 
 
 runs:
   using: "composite"
