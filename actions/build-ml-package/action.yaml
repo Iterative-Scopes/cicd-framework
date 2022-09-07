@@ -21,7 +21,7 @@ runs:
       id: app_settings
       uses: Iterative-Scopes/cicd-framework/actions/cicdcfg@ISOPS-548
       with:
-        env: dev
+        env: ${{ inputs.env }}
         role: build
         profile: ${{ inputs.profile }}
     
