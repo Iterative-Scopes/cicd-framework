@@ -2,7 +2,7 @@ name: build lambda package
 description: build lambda package, return package ref
 
 inputs:
-  env:
+  env_push:
     description: environment to push package
     required: true
   profile:
@@ -21,7 +21,7 @@ runs:
       id: app_settings
       uses: Iterative-Scopes/cicd-framework/actions/cicdcfg@ISOPS-548
       with:
-        env: ${{ inputs.env }}
+        env: ${{ inputs.env_push }}
         role: build
         profile: ${{ inputs.profile }}
     
