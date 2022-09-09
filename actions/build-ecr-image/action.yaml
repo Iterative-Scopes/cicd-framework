@@ -5,6 +5,9 @@ inputs:
   aws_region:
     description: aws region
     required: true
+  env_push:
+    description: aws environment
+    required: true
   repository:
     description: aws ecr repository
     required: true
@@ -12,10 +15,6 @@ inputs:
     description: make command
     default: container
     required: false
-  # pushtoecr: 
-  #   description: push image to ecr
-  #   default: yes
-  #   required: false
 
 outputs:
   tag:
@@ -36,9 +35,10 @@ runs:
         uses: aws-actions/amazon-ecr-login@v1
         env: 
           AWS_REGION: ${{ inputs.aws_region }}
-    
-      - name: Build, tag, and push image to Amazon ECR
-        id: erc-image
+
+      - name: Build docker image
+        id: build-image
+        if: ${{ inputs.env_push }} == 'dev'
         env:
           REMOTE_REGISTRY: ${{ steps.login-ecr.outputs.registry }}/${{ inputs.repository }}
           IMAGE_TAG: ${{ github.ref_name }}
@@ -47,6 +47,14 @@ runs:
           echo "image tag [$IMAGE_TAG]"
           make ${{ inputs.make_cmd }} remotereg="$REMOTE_REGISTRY" tag="$IMAGE_TAG"
           make ${{ inputs.make_cmd }}test
+    
+      - name: Tag, and push image to Amazon ECR
+        id: ecr-image
+        env:
+          REMOTE_REGISTRY: ${{ steps.login-ecr.outputs.registry }}/${{ inputs.repository }}
+          IMAGE_TAG: ${{ github.ref_name }}
+        shell: bash
+        run: |
           docker image ls
           docker push $REMOTE_REGISTRY:$IMAGE_TAG-cpu
           echo "set output tag ["$IMAGE_TAG"]"

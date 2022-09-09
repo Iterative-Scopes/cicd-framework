@@ -41,6 +41,7 @@ runs:
       with:
         aws_region: ${{ steps.app_settings.outputs.aws_region }}
         repository: ${{ steps.app_settings.outputs.app_repository }}
+        env_push: ${{ inputs.env_push }}
 
 
     - name: Set package ref
