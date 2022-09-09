@@ -19,7 +19,7 @@ inputs:
 outputs:
   tag:
     description: image tag
-    value: ${{ steps.erc-image.outputs.tag }}
+    value: ${{ steps.ecr-image.outputs.tag }}
 
 # assume caller has connect to AWS account
 runs:
