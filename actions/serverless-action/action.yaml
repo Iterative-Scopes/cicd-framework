@@ -1,0 +1,13 @@
+name: 'serverless'
+description: 'use for serverless tooling'
+inputs:
+  sls_params:
+    description: 'serverless params to pass'
+    required: true
+runs:
+  using: 'docker'
+  image: 'Dockerfile'
+  args:
+    - ${{ inputs.sls_params }}
+  volumes: 
+    - ${{ github.workspace }}:/src
