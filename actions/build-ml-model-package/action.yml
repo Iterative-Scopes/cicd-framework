@@ -67,13 +67,16 @@ runs:
       env:
         REMOTE_REGISTRY: ${{ steps.login-ecr-prod.outputs.registry }}/${{ steps.app_settings_prod.outputs.app_repository }}
         IMAGE_TAG: ${{ github.ref_name }}
+
       shell: bash
       run: |
         docker image ls
-        docker push $IMAGE_TAG-cpu
+        docker image tag upper-lower-gi-cpu $REMOTE_REGISTRY:$IMAGE_TAG-cpu
+        docker image tag upper-lower-gi-gpu $REMOTE_REGISTRY:$IMAGE_TAG-gpu
+        docker push $REMOTE_REGISTRY:$IMAGE_TAG-cpu
         echo "set output tag ["$IMAGE_TAG"]"
         echo "::set-output name=tag::"$IMAGE_TAG""
-        docker push $IMAGE_TAG-gpu
+        docker push $REMOTE_REGISTRY:$IMAGE_TAG-gpu
         echo "set output tag ["$IMAGE_TAG"]"
         echo "::set-output name=tag::"$IMAGE_TAG""
 
@@ -105,13 +108,16 @@ runs:
       env:
         REMOTE_REGISTRY: ${{ steps.login-ecr.outputs.registry }}/${{ steps.app_settings_phi.outputs.app_repository }}
         IMAGE_TAG: ${{ github.ref_name }}
+
       shell: bash
       run: |
         docker image ls
-        docker push $IMAGE_TAG-cpu
+        docker image tag upper-lower-gi-cpu $REMOTE_REGISTRY:$IMAGE_TAG-cpu
+        docker image tag upper-lower-gi-gpu $REMOTE_REGISTRY:$IMAGE_TAG-gpu
+        docker push $REMOTE_REGISTRY:$IMAGE_TAG-cpu
         echo "set output tag ["$IMAGE_TAG"]"
         echo "::set-output name=tag::"$IMAGE_TAG""
-        docker push $IMAGE_TAG-gpu
+        docker push $REMOTE_REGISTRY:$IMAGE_TAG-gpu
         echo "set output tag ["$IMAGE_TAG"]"
         echo "::set-output name=tag::"$IMAGE_TAG""
         
