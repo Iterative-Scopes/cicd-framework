@@ -1,0 +1,33 @@
+name: "Map GitHub Ref to IS env"
+description: "map Github ref to IS env"
+outputs:
+  env:
+    description: "IS env"
+    value: ${{ steps.setup.outputs.env }}
+runs:
+  using: 'composite'
+  steps:
+      - name: Check if current ref is on a branch
+        id: on-branch
+        if: ${{ github.ref_type == 'branch' }}
+        shell: bash
+        run: |
+          if [ $GITHUB_REF_NAME == "main" ]; 
+          then
+            echo ON_ENV=qa >> $GITHUB_ENV
+          else
+            echo ON_ENV=dev >> $GITHUB_ENV
+          fi;
+      
+      - name: Check if current ref is on a tag
+        id: on-tag
+        if: ${{ github.ref_type == 'tag' }}
+        shell: bash
+        run: |
+          echo ON_ENV=staging >> $GITHUB_ENV
+
+      - name: Setup CICD settings
+        id: setup
+        shell: bash
+        run: |
+          echo "::set-output name=env::${{ env.ON_ENV }}"
