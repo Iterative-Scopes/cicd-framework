@@ -65,7 +65,7 @@ runs:
     - name: Tag, and push image to Amazon ECR
       id: ecr-image-prod
       env:
-        REMOTE_REGISTRY: ${{ steps.login-ecr-prod.outputs.registry }}/${{ inputs.repository }}
+        REMOTE_REGISTRY: ${{ steps.login-ecr-prod.outputs.registry }}/${{ steps.app_settings_prod.outputs.app_repository }}
         IMAGE_TAG: ${{ github.ref_name }}
       shell: bash
       run: |
@@ -103,7 +103,7 @@ runs:
     - name: Tag, and push image to Amazon ECR
       id: ecr-image-phi
       env:
-        REMOTE_REGISTRY: ${{ steps.login-ecr-phi.outputs.registry }}/${{ inputs.repository }}
+        REMOTE_REGISTRY: ${{ steps.login-ecr-phi.outputs.registry }}/${{ steps.app_settings_phi.outputs.app_repository }}
         IMAGE_TAG: ${{ github.ref_name }}
       shell: bash
       run: |
