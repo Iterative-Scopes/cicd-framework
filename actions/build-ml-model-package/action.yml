@@ -86,7 +86,7 @@ runs:
         profile: ${{ inputs.profile }}
 
     - name: Configure AWS credentials
-      id: aws-configure
+      id: aws-configure-phi
       uses: aws-actions/configure-aws-credentials@v1
       with:
         role-to-assume: arn:aws:iam::${{ steps.app_settings_phi.outputs.aws_account }}:role/${{ steps.app_settings_phi.outputs.aws_role }}
