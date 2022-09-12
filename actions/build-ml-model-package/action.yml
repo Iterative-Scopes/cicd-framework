@@ -39,33 +39,33 @@ runs:
         aws_region: ${{ steps.app_settings.outputs.aws_region }}
         repository: ${{ steps.app_settings.outputs.app_repository }}
 
-    - name: Get given application settings
-      id: app_settings
+    - name: Get given application settings for prod
+      id: app_settings_prod
       uses: Iterative-Scopes/cicd-framework/actions/cicdcfg@main
       with:
         env: prod
         role: build
         profile: ${{ inputs.profile }}
 
-    - name: Configure AWS credentials
-      id: aws-configure
+    - name: Configure AWS credentials for prod
+      id: aws-configure_prod
       uses: aws-actions/configure-aws-credentials@v1
       with:
-        role-to-assume: arn:aws:iam::${{ steps.app_settings.outputs.aws_account }}:role/${{ steps.app_settings.outputs.aws_role }}
-        role-duration-seconds: ${{ steps.app_settings.outputs.aws_role_duration }}
-        aws-region: ${{ steps.app_settings.outputs.aws_region }}
-        audience: ${{ steps.app_settings.outputs.aws_audience }}    
+        role-to-assume: arn:aws:iam::${{ steps.app_settings_prod.outputs.aws_account }}:role/${{ steps.app_settings_prod.outputs.aws_role }}
+        role-duration-seconds: ${{ steps.app_settings_prod.outputs.aws_role_duration }}
+        aws-region: ${{ steps.app_settings_prod.outputs.aws_region }}
+        audience: ${{ steps.app_settings_prod.outputs.aws_audience }}    
     
     - name: Login to Amazon ECR
-      id: login-ecr
+      id: login-ecr-prod
       uses: aws-actions/amazon-ecr-login@v1
       env: 
         AWS_REGION: ${{ inputs.aws_region }} 
     
     - name: Tag, and push image to Amazon ECR
-      id: ecr-image
+      id: ecr-image-prod
       env:
-        REMOTE_REGISTRY: ${{ steps.login-ecr.outputs.registry }}/${{ inputs.repository }}
+        REMOTE_REGISTRY: ${{ steps.login-ecr-prod.outputs.registry }}/${{ inputs.repository }}
         IMAGE_TAG: ${{ github.ref_name }}
       shell: bash
       run: |
@@ -78,7 +78,7 @@ runs:
         echo "::set-output name=tag::"$IMAGE_TAG""
 
     - name: Get given application settings
-      id: app_settings
+      id: app_settings_phi
       uses: Iterative-Scopes/cicd-framework/actions/cicdcfg@main
       with:
         env: phi
@@ -89,21 +89,21 @@ runs:
       id: aws-configure
       uses: aws-actions/configure-aws-credentials@v1
       with:
-        role-to-assume: arn:aws:iam::${{ steps.app_settings.outputs.aws_account }}:role/${{ steps.app_settings.outputs.aws_role }}
-        role-duration-seconds: ${{ steps.app_settings.outputs.aws_role_duration }}
-        aws-region: ${{ steps.app_settings.outputs.aws_region }}
-        audience: ${{ steps.app_settings.outputs.aws_audience }}    
+        role-to-assume: arn:aws:iam::${{ steps.app_settings_phi.outputs.aws_account }}:role/${{ steps.app_settings_phi.outputs.aws_role }}
+        role-duration-seconds: ${{ steps.app_settings_phi.outputs.aws_role_duration }}
+        aws-region: ${{ steps.app_settings_phi.outputs.aws_region }}
+        audience: ${{ steps.app_settings_phi.outputs.aws_audience }}    
     
     - name: Login to Amazon ECR
-      id: login-ecr
+      id: login-ecr-phi
       uses: aws-actions/amazon-ecr-login@v1
       env: 
         AWS_REGION: ${{ inputs.aws_region }} 
     
     - name: Tag, and push image to Amazon ECR
-      id: ecr-image
+      id: ecr-image-phi
       env:
-        REMOTE_REGISTRY: ${{ steps.login-ecr.outputs.registry }}/${{ inputs.repository }}
+        REMOTE_REGISTRY: ${{ steps.login-ecr-phi.outputs.registry }}/${{ inputs.repository }}
         IMAGE_TAG: ${{ github.ref_name }}
       shell: bash
       run: |
