@@ -53,10 +53,10 @@ runs:
         shell: bash
         run: |
           docker image ls
-          docker push $REMOTE_REGISTRY:$IMAGE_TAG-cpu
+          docker push $IMAGE_TAG-cpu
           echo "set output tag ["$IMAGE_TAG"]"
           echo "::set-output name=tag::"$IMAGE_TAG""
-          docker push $REMOTE_REGISTRY:$IMAGE_TAG-gpu
+          docker push $IMAGE_TAG-gpu
           echo "set output tag ["$IMAGE_TAG"]"
           echo "::set-output name=tag::"$IMAGE_TAG""
          # make ${{ inputs.make_cmd }}_image_push remotereg="$REMOTE_REGISTRY" tag="$IMAGE_TAG"
