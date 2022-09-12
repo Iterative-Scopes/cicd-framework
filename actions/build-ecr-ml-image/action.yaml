@@ -28,8 +28,8 @@ runs:
         env: 
           AWS_REGION: ${{ inputs.aws_region }}
 
-      - name: Build docker image
-        id: build-image
+      - name: Build,Tag, and push image to Amazon ECR
+        id: ecr-image
         env:
           REMOTE_REGISTRY: ${{ steps.login-ecr.outputs.registry }}/${{ inputs.repository }}
           IMAGE_TAG: ${{ github.ref_name }}
@@ -38,14 +38,6 @@ runs:
           echo "image tag [$IMAGE_TAG]"
           make ${{ inputs.make_cmd }} remotereg="$REMOTE_REGISTRY" tag="$IMAGE_TAG"
           make ${{ inputs.make_cmd }}test
-    
-      - name: Tag, and push image to Amazon ECR
-        id: ecr-image
-        env:
-          REMOTE_REGISTRY: ${{ steps.login-ecr.outputs.registry }}/${{ inputs.repository }}
-          IMAGE_TAG: ${{ github.ref_name }}
-        shell: bash
-        run: |
           docker image ls
           docker push $REMOTE_REGISTRY:$IMAGE_TAG-cpu
           echo "set output tag ["$IMAGE_TAG"]"
@@ -53,4 +45,3 @@ runs:
           docker push $REMOTE_REGISTRY:$IMAGE_TAG-gpu
           echo "set output tag ["$IMAGE_TAG"]"
           echo "::set-output name=tag::"$IMAGE_TAG""
-         # make ${{ inputs.make_cmd }}_image_push remotereg="$REMOTE_REGISTRY" tag="$IMAGE_TAG"

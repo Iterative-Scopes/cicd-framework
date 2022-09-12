@@ -34,7 +34,7 @@ runs:
     - name: Push ML model container to ECR
       id: build-ecr
       if: ${{ steps.app_settings.outputs.app_registry == 'ecr' }}
-      uses: Iterative-Scopes/cicd-framework/actions/build-ecr-image@main
+      uses: Iterative-Scopes/cicd-framework/actions/build-ecr-ml-image@main
       with:
         aws_region: ${{ steps.app_settings.outputs.aws_region }}
         repository: ${{ steps.app_settings.outputs.app_repository }}

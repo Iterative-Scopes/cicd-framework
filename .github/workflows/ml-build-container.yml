@@ -19,10 +19,10 @@ on:
         description: aws region
         required: true
         type: string
-      repository:
+      ecr_repository:
         description: ecr repository
         required: true
-        type: string 
+        type: string
 
 jobs:
   build:
@@ -30,44 +30,33 @@ jobs:
     steps: 
       - name: Checkout
         uses: actions/checkout@v3
-        with:
-          clean: false
-      
-      - name: Download ml-common artifact 
-        uses: actions/download-artifact@master
-        with:
-          name: ml_common_artifact
-          path: ml-common
-      
-      - name: Debug artifact
-        run: ls -alt ./
     
       # use ci/cd framework action python-build
-      - name: container-build-test  
-        uses:  Iterative-Scopes/cicd-framework/actions/python-build@ISOPS-548
+      - name: cpu-build-test  
+        uses:  Iterative-Scopes/cicd-framework/actions/python-build@main
         with:
           python_version: ${{ inputs.python_version }} 
             
       # use ci/cd framework action build-ecr-image
       - name: Build, tag, and push image CPU to Amazon ECR
-        uses: Iterative-Scopes/cicd-framework/actions/build-ecr-image@ISOPS-548
+        uses: Iterative-Scopes/cicd-framework/actions/build-ecr-image@main
         with:
           aws_account: ${{ inputs.aws_account }}
           aws_role: ${{ inputs.aws_role }}
           aws_region: ${{ inputs.aws_region }}
-          repository: ${{ inputs.repository }}
-      #     make_cmd: cpu
+          ecr_repository: ${{ inputs.ecr_repository }}
+          make_cmd: cpu
 
-      # - name: gpu-build-test  
-      #   uses:  Iterative-Scopes/cicd-framework/actions/python-build@ISOPS-548
-      #   with:
-      #     python_version: ${{ inputs.python_version }}
+      - name: gpu-build-test  
+        uses:  Iterative-Scopes/cicd-framework/actions/python-build@main
+        with:
+          python_version: ${{ inputs.python_version }}
 
-      # - name: Build, tag, and push image GPU to Amazon ECR
-      #   uses: Iterative-Scopes/cicd-framework/actions/build-ecr-image@ISOPS-548
-      #   with:
-      #     aws_account: ${{ inputs.aws_account }}
-      #     aws_role: ${{ inputs.aws_role }}
-      #     aws_region: ${{ inputs.aws_region }}
-      #     repository: ${{ inputs.repository }}
-      #     make_cmd: gpu
+      - name: Build, tag, and push image GPU to Amazon ECR
+        uses: Iterative-Scopes/cicd-framework/actions/build-ecr-image@main
+        with:
+          aws_account: ${{ inputs.aws_account }}
+          aws_role: ${{ inputs.aws_role }}
+          aws_region: ${{ inputs.aws_region }}
+          ecr_repository: ${{ inputs.ecr_repository }}
+          make_cmd: gpu
