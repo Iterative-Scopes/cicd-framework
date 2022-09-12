@@ -38,6 +38,18 @@ runs:
       with:
         aws_region: ${{ steps.app_settings.outputs.aws_region }}
         repository: ${{ steps.app_settings.outputs.app_repository }}
+    
+    - name: Set package ref
+      id: set-pkg-ref
+      shell: bash
+      run: |
+          if [ ${{ steps.push-ecr.outputs.tag }} ];
+          then 
+            echo "::set-output name=package_ref::${{ steps.push-ecr.outputs.tag }}"
+            exit 0
+          fi;
+          echo "::error::missing package ref in building app [ ${{ steps.app_settings.outputs.app_name }}]
+          exit 128
 
     - name: Get given application settings for prod
       id: app_settings_prod
@@ -76,6 +88,18 @@ runs:
         docker push $REMOTE_REGISTRY:$IMAGE_TAG-gpu
         echo "set output tag ["$IMAGE_TAG"]"
         echo "::set-output name=tag::"$IMAGE_TAG""
+    
+    - name: Set package ref
+      id: set-pkg-ref-prod
+      shell: bash
+      run: |
+          if [ ${{ steps.ecr-image-prod.outputs.tag }} ];
+          then 
+            echo "::set-output name=package_ref::${{ steps.ecr-image-prod.outputs.tag }}"
+            exit 0
+          fi;
+          echo "::error::missing package ref in building app [ ${{ steps.app_settings_prod.outputs.app_name }}]
+          exit 128
 
     - name: Get given application settings
       id: app_settings_phi
@@ -116,14 +140,14 @@ runs:
         echo "::set-output name=tag::"$IMAGE_TAG""
         
     - name: Set package ref
-      id: set-pkg-ref
+      id: set-pkg-ref-phi
       shell: bash
       run: |
-          if [ ${{ steps.push-ecr.outputs.tag }} ];
+          if [ ${{ steps.ecr-image-phi.outputs.tag }} ];
           then 
-            echo "::set-output name=package_ref::${{ steps.push-ecr.outputs.tag }}"
+            echo "::set-output name=package_ref::${{ steps.ecr-image-phi.outputs.tag }}"
             exit 0
           fi;
-          echo "::error::missing package ref in building app [ ${{ steps.app_settings.outputs.app_name }}]
+          echo "::error::missing package ref in building app [ ${{ steps.app_settings_phi.outputs.app_name }}]
           exit 128
         
