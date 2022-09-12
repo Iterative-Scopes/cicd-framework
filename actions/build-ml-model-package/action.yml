@@ -60,7 +60,7 @@ runs:
       id: login-ecr-prod
       uses: aws-actions/amazon-ecr-login@v1
       env: 
-        AWS_REGION: ${{ inputs.aws_region }} 
+        AWS_REGION: ${{ steps.app_settings_prod.outputs.aws_region }}
     
     - name: Tag, and push image to Amazon ECR
       id: ecr-image-prod
@@ -98,7 +98,7 @@ runs:
       id: login-ecr-phi
       uses: aws-actions/amazon-ecr-login@v1
       env: 
-        AWS_REGION: ${{ inputs.aws_region }} 
+        AWS_REGION: ${{ steps.app_settings_phi.outputs.aws_region }} 
     
     - name: Tag, and push image to Amazon ECR
       id: ecr-image-phi
