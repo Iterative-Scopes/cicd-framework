@@ -1,0 +1,129 @@
+name: build ML model container(s)
+description: build ML model container
+
+inputs:
+  profile:
+    description: ci/cd profile 
+    required: true
+
+outputs:
+  package_ref:
+    description: ML model package ref
+    value: ${{ steps.set-pkg-ref.outputs.package_ref }}
+
+runs:
+    using: "composite"
+    steps: 
+    - name: Get given application settings
+      id: app_settings
+      uses: Iterative-Scopes/cicd-framework/actions/cicdcfg@main
+      with:
+        env: dev
+        role: build
+        profile: ${{ inputs.profile }}
+    
+    - name: Configure AWS credentials
+      id: aws-configure
+      uses: aws-actions/configure-aws-credentials@v1
+      with:
+        role-to-assume: arn:aws:iam::${{ steps.app_settings.outputs.aws_account }}:role/${{ steps.app_settings.outputs.aws_role }}
+        role-duration-seconds: ${{ steps.app_settings.outputs.aws_role_duration }}
+        aws-region: ${{ steps.app_settings.outputs.aws_region }}
+        audience: ${{ steps.app_settings.outputs.aws_audience }}
+
+    - name: Push ML model container to ECR
+      id: push-ecr
+      if: ${{ steps.app_settings.outputs.app_registry == 'ecr' }}
+      uses: Iterative-Scopes/cicd-framework/actions/build-ecr-image@main
+      with:
+        aws_region: ${{ steps.app_settings.outputs.aws_region }}
+        repository: ${{ steps.app_settings.outputs.app_repository }}
+
+    - name: Get given application settings
+      id: app_settings
+      uses: Iterative-Scopes/cicd-framework/actions/cicdcfg@main
+      with:
+        env: prod
+        role: build
+        profile: ${{ inputs.profile }}
+
+    - name: Configure AWS credentials
+      id: aws-configure
+      uses: aws-actions/configure-aws-credentials@v1
+      with:
+        role-to-assume: arn:aws:iam::${{ steps.app_settings.outputs.aws_account }}:role/${{ steps.app_settings.outputs.aws_role }}
+        role-duration-seconds: ${{ steps.app_settings.outputs.aws_role_duration }}
+        aws-region: ${{ steps.app_settings.outputs.aws_region }}
+        audience: ${{ steps.app_settings.outputs.aws_audience }}    
+    
+    - name: Login to Amazon ECR
+      id: login-ecr
+      uses: aws-actions/amazon-ecr-login@v1
+      env: 
+        AWS_REGION: ${{ inputs.aws_region }} 
+    
+    - name: Tag, and push image to Amazon ECR
+      id: ecr-image
+      env:
+        REMOTE_REGISTRY: ${{ steps.login-ecr.outputs.registry }}/${{ inputs.repository }}
+        IMAGE_TAG: ${{ github.ref_name }}
+      shell: bash
+      run: |
+        docker image ls
+        docker push $REMOTE_REGISTRY:$IMAGE_TAG-cpu
+        echo "set output tag ["$IMAGE_TAG"]"
+        echo "::set-output name=tag::"$IMAGE_TAG""
+        docker push $REMOTE_REGISTRY:$IMAGE_TAG-gpu
+        echo "set output tag ["$IMAGE_TAG"]"
+        echo "::set-output name=tag::"$IMAGE_TAG""
+
+    - name: Get given application settings
+      id: app_settings
+      uses: Iterative-Scopes/cicd-framework/actions/cicdcfg@main
+      with:
+        env: phi
+        role: build
+        profile: ${{ inputs.profile }}
+
+    - name: Configure AWS credentials
+      id: aws-configure
+      uses: aws-actions/configure-aws-credentials@v1
+      with:
+        role-to-assume: arn:aws:iam::${{ steps.app_settings.outputs.aws_account }}:role/${{ steps.app_settings.outputs.aws_role }}
+        role-duration-seconds: ${{ steps.app_settings.outputs.aws_role_duration }}
+        aws-region: ${{ steps.app_settings.outputs.aws_region }}
+        audience: ${{ steps.app_settings.outputs.aws_audience }}    
+    
+    - name: Login to Amazon ECR
+      id: login-ecr
+      uses: aws-actions/amazon-ecr-login@v1
+      env: 
+        AWS_REGION: ${{ inputs.aws_region }} 
+    
+    - name: Tag, and push image to Amazon ECR
+      id: ecr-image
+      env:
+        REMOTE_REGISTRY: ${{ steps.login-ecr.outputs.registry }}/${{ inputs.repository }}
+        IMAGE_TAG: ${{ github.ref_name }}
+      shell: bash
+      run: |
+        docker image ls
+        docker push $REMOTE_REGISTRY:$IMAGE_TAG-cpu
+        echo "set output tag ["$IMAGE_TAG"]"
+        echo "::set-output name=tag::"$IMAGE_TAG""
+        docker push $REMOTE_REGISTRY:$IMAGE_TAG-gpu
+        echo "set output tag ["$IMAGE_TAG"]"
+        echo "::set-output name=tag::"$IMAGE_TAG""
+        
+    - name: Set package ref
+      id: set-pkg-ref
+      shell: bash
+      run: |
+          if [ ${{ steps.push-ecr.outputs.tag }} ];
+          then 
+            echo "::set-output name=package_ref::${{ steps.push-ecr.outputs.tag }}"
+            exit 0
+          fi;
+          echo "::error::missing package ref in building app [ ${{ steps.app_settings.outputs.app_name }}]
+          exit 128
+        

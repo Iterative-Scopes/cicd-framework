@@ -2,9 +2,6 @@ name: build lambda package
 description: build lambda package, return package ref
 
 inputs:
-  env_push:
-    description: environment to push package
-    required: true
   profile:
     description: ci/cd profile 
     required: true
@@ -41,8 +38,6 @@ runs:
       with:
         aws_region: ${{ steps.app_settings.outputs.aws_region }}
         repository: ${{ steps.app_settings.outputs.app_repository }}
-        env_push: ${{ inputs.env_push }}
-
 
     - name: Set package ref
       id: set-pkg-ref
