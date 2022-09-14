@@ -34,7 +34,7 @@ runs:
     - name: Push ML model container to ECR
       id: build-ecr
       if: ${{ steps.app_settings.outputs.app_registry == 'ecr' }}
-      uses: Iterative-Scopes/cicd-framework/actions/build-ecr-ml-image@main
+      uses: Iterative-Scopes/cicd-framework/actions/build-ecr-ml-image@ISOPS-548
       with:
         aws_region: ${{ steps.app_settings.outputs.aws_region }}
         repository: ${{ steps.app_settings.outputs.app_repository }}
@@ -70,13 +70,9 @@ runs:
 
       shell: bash
       run: |
-        docker image ls
-        docker image tag ${{ steps.app_settings.outputs.app_name }}-cpu $REMOTE_REGISTRY:$IMAGE_TAG-cpu
-        docker image tag ${{ steps.app_settings.outputs.app_name }}-gpu $REMOTE_REGISTRY:$IMAGE_TAG-gpu
-        docker push $REMOTE_REGISTRY:$IMAGE_TAG-cpu
+        make containerpublish
         echo "set output tag ["$IMAGE_TAG"]"
         echo "::set-output name=tag::"$IMAGE_TAG""
-        docker push $REMOTE_REGISTRY:$IMAGE_TAG-gpu
         echo "set output tag ["$IMAGE_TAG"]"
         echo "::set-output name=tag::"$IMAGE_TAG""
 
@@ -111,13 +107,9 @@ runs:
 
       shell: bash
       run: |
-        docker image ls
-        docker image tag ${{ steps.app_settings.outputs.app_name }}-cpu $REMOTE_REGISTRY:$IMAGE_TAG-cpu
-        docker image tag ${{ steps.app_settings.outputs.app_name }}-gpu $REMOTE_REGISTRY:$IMAGE_TAG-gpu
-        docker push $REMOTE_REGISTRY:$IMAGE_TAG-cpu
+        make containerpublish
         echo "set output tag ["$IMAGE_TAG"]"
         echo "::set-output name=tag::"$IMAGE_TAG""
-        docker push $REMOTE_REGISTRY:$IMAGE_TAG-gpu
         echo "set output tag ["$IMAGE_TAG"]"
         echo "::set-output name=tag::"$IMAGE_TAG""
         
