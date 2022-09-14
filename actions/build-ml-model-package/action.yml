@@ -71,10 +71,6 @@ runs:
       shell: bash
       run: |
         make containerpublish remotereg="$REMOTE_REGISTRY" tag="$IMAGE_TAG"
-        echo "set output tag ["$IMAGE_TAG"]"
-        echo "::set-output name=tag::"$IMAGE_TAG""
-        echo "set output tag ["$IMAGE_TAG"]"
-        echo "::set-output name=tag::"$IMAGE_TAG""
 
     - name: Get given application settings
       id: app_settings_phi
@@ -108,10 +104,6 @@ runs:
       shell: bash
       run: |
         make containerpublish remotereg="$REMOTE_REGISTRY" tag="$IMAGE_TAG"
-        echo "set output tag ["$IMAGE_TAG"]"
-        echo "::set-output name=tag::"$IMAGE_TAG""
-        echo "set output tag ["$IMAGE_TAG"]"
-        echo "::set-output name=tag::"$IMAGE_TAG""
         
     - name: Set package ref
       id: set-pkg-ref
