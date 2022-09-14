@@ -1,0 +1,41 @@
+name: build ecr image
+description: build a container image and push to ecr, return image tag
+
+inputs:
+  aws_region:
+    description: aws region
+    required: true
+  repository:
+    description: aws ecr repository
+    required: true
+  make_cmd: 
+    description: make command
+    default: container
+    required: false
+
+outputs:
+  tag:
+    description: image tag
+    value: ${{ steps.ecr-image.outputs.tag }}
+
+# assume caller has connect to AWS account
+runs:
+    using: "composite"
+    steps:
+      - name: Login to Amazon ECR
+        id: login-ecr
+        uses: aws-actions/amazon-ecr-login@v1
+        env: 
+          AWS_REGION: ${{ inputs.aws_region }}
+
+      - name: Build,Tag, and push image to Amazon ECR
+        id: ecr-image
+        env:
+          REMOTE_REGISTRY: ${{ steps.login-ecr.outputs.registry }}/${{ inputs.repository }}
+          IMAGE_TAG: ${{ github.ref_name }}
+        shell: bash
+        run: |
+          make ${{ inputs.make_cmd }} remotereg="$REMOTE_REGISTRY" tag="$IMAGE_TAG"
+          make ${{ inputs.make_cmd }}test
+          make ${{ inputs.make_cmd }}publish remotereg="$REMOTE_REGISTRY" tag="$IMAGE_TAG"
+          
