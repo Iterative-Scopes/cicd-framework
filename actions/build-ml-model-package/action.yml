@@ -70,7 +70,7 @@ runs:
 
       shell: bash
       run: |
-        make containerpublish
+        make containerpublish remotereg="$REMOTE_REGISTRY" tag="$IMAGE_TAG"
         echo "set output tag ["$IMAGE_TAG"]"
         echo "::set-output name=tag::"$IMAGE_TAG""
         echo "set output tag ["$IMAGE_TAG"]"
@@ -107,7 +107,7 @@ runs:
 
       shell: bash
       run: |
-        make containerpublish
+        make containerpublish remotereg="$REMOTE_REGISTRY" tag="$IMAGE_TAG"
         echo "set output tag ["$IMAGE_TAG"]"
         echo "::set-output name=tag::"$IMAGE_TAG""
         echo "set output tag ["$IMAGE_TAG"]"

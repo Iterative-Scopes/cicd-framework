@@ -37,7 +37,7 @@ runs:
         run: |
           make ${{ inputs.make_cmd }} remotereg="$REMOTE_REGISTRY" tag="$IMAGE_TAG"
           make ${{ inputs.make_cmd }}test
-          make ${{ inputs.make_cmd }}publish
+          make ${{ inputs.make_cmd }}publish remotereg="$REMOTE_REGISTRY" tag="$IMAGE_TAG"
           echo "set output tag ["$IMAGE_TAG"]"
           echo "::set-output name=tag::"$IMAGE_TAG""
           echo "set output tag ["$IMAGE_TAG"]"
