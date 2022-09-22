@@ -18,16 +18,18 @@ def get_settings(env, role, profile):
         print(f"Error in opening config file [{e}]")
         return 2
     try:
-        print(f"::set-output name=aws_account::{cfg['aws'][env]['account']}")
-        print(f"::set-output name=aws_region::{cfg['aws'][env]['region']}")
-        print(f"::set-output name=aws_audience::{cfg['aws'][env]['audience']}")
         print(f"::set-output name=aws_role::{cfg['role'][role]['name']}")
         print(f"::set-output name=aws_role_duration::{cfg['role'][role]['duration']}")
         print(f"::set-output name=app_name::{cfg['application']['name']}")
-        print(f"::set-output name=app_registry::{cfg['application']['package']['registry']}")
-        print(f"::set-output name=app_repository::{cfg['application']['package']['repository']}")
         print(f"::set-output name=app_runtime::{cfg['application']['runtime']['name']}")
         print(f"::set-output name=app_runtime_version::{cfg['application']['runtime']['version']}")
+        
+        for key in cfg['application']['package']:
+            print(f"name=app_{key}::{cfg['application']['package'][key]}")
+            print(f"::set-output name=app_{key}::{cfg['application']['package'][key]}")
+        for key in cfg['aws'][env]:
+            print(f"name=aws_{key}::{cfg['aws'][env][key]}")
+            print(f"::set-output name=aws_{key}::{cfg['aws'][env][key]}")
 
     except KeyError as e:
         print(f"Incorrect key value [{e}]")
