@@ -2,14 +2,14 @@ name: build lambda package
 description: build lambda package, return zip uri
 
 inputs:
-  bucket:
-    description: s3 bucket name as lambda zip registry 
+  env:
+    description: environment to push package
     required: true
-  zip_folder:
-    description: path to lambda zip folder 
+  registry: 
+    description: "s3 bucket or ecr registry URI"
     required: true
-  lambda_name:
-    description: name of lambda package
+  repository: 
+    description: "app or service name"
     required: true
 
 outputs:
@@ -32,5 +32,5 @@ runs:
       shell: bash
       run: |
         echo "push zip..."
-        aws s3 cp ${{ inputs.zip_folder }} s3://${{ inputs.bucket }}/${{ inputs.lambda_name }}
-        echo "::set-output name=zip_uri::s3://${{ inputs.bucket }}/${{ inputs.lambda_name }}"
+        aws s3 cp ${{ inputs.repository }}.zip ${{ inputs.registry }}/${{ inputs.env }}/${{ inputs.repository }}.zip
+        echo "::set-output name=zip_uri::${{ inputs.registry }}/${{ inputs.env }}/${{ inputs.repository }}.zip"

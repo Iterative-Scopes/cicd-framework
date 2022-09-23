@@ -47,9 +47,9 @@ runs:
       if: contains(${{ steps.app_settings.outputs.app_registry}}, "s3:::")
       uses: Iterative-Scopes/cicd-framework/actions/build-lambda-zip@isops-620
       with:
-        bucket: ${{ steps.app_settings.outputs.app_bucket }}
-        zip_folder: ${{ steps.app_settings.outputs.app_src_folder }}
-        lambda_name: ${{ steps.app_settings.outputs.app_lambda_name }}
+        repository: ${{ steps.app_settings.outputs.app_repository }}
+        registry: ${{ steps.app_settings.outputs.app_registry }}
+        env: ${{ inputs.env }}
 
     - name: Set package ref
       id: set-pkg-ref

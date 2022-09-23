@@ -39,21 +39,7 @@ outputs:
     value: ${{ steps.get-settings.outputs.app_repository }}
   app_runtime: 
     description: "app or service name"
-    value: ${{ steps.get-settings.outputs.app_runtime }}  
-  app_bucket:
-    description: "s3 bucket name"
-    value: ${{ steps.get-settings.outputs.app_bucket }} 
-  app_zip_folder:
-    description: "lambda zip folder path"
-    value: ${{ steps.get-settings.outputs.app_zip_folder }} 
-  app_lambda_name:
-    description: "lambda name"
-    value: ${{ steps.get-settings.outputs.app_lambda_name }} 
-
-
-
-
-
+    value: ${{ steps.get-settings.outputs.app_runtime }}
   app_runtime_version: 
     description: "app or service name"
     value: ${{ steps.get-settings.outputs.app_runtime_version }}  
