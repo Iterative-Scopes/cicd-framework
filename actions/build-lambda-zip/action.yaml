@@ -33,4 +33,4 @@ runs:
       run: |
         echo "push zip..."
         aws s3 cp ${{ inputs.repository }}.zip ${{ inputs.registry }}/${{ inputs.env }}/${{ inputs.repository }}.zip
-        echo "::set-output name=zip_uri::${{ inputs.registry }}/${{ inputs.env }}/${{ inputs.repository }}.zip"
+        echo "::set-output name=zip_uri::${{ inputs.registry }}/${{ inputs.env }}"

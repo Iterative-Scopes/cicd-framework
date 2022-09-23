@@ -65,5 +65,6 @@ runs:
         if: contains(${{ steps.app_settings.outputs.app_registry}}, "s3:::")
         shell: bash
         run: |
-          echo "update lambda with [${{ inputs.package_ref }}] --- coming soon"
+          echo "update lambda with [${{ inputs.package_ref }}]"
+          aws lambda update-function-code --dry-run --function-name  ${{ steps.app_settings.outputs.app_repository}}-${{ inputs.env }}-lookup_patient_data --s3-bucket dev-is-phi-infrastructure --s3-key serverless/dev/${{ steps.app_settings.outputs.app_repository}}.zip 
           exit 0
