@@ -6,6 +6,10 @@ inputs:
   docker-compose:
     description: docker compose file to compose up 
     required: false
+  make-directory:
+    description: directory of makefile
+    required: false
+    default: $GITHUB_WORKSPACE
 
 runs:
   using: "composite"
@@ -15,7 +19,7 @@ runs:
       shell: bash
       run: |
         echo "run unit testing"
-        make unittest
+        make -C ${{ inputs.make-directory }} unittest
     # Create unit testing coverage report
     - name: Generate coverage report 
       shell: bash

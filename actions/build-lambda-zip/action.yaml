@@ -11,6 +11,10 @@ inputs:
   repository: 
     description: "app or service name"
     required: true
+  make-directory:
+    description: directory of makefile
+    required: false
+    default: $GITHUB_WORKSPACE
 
 outputs:
   zip_uri:
@@ -26,7 +30,7 @@ runs:
       shell: bash
       run: |
         echo "build zip..."
-        make build
+        make -C ${{ inputs.make-directory }} build
     - name: Push to lambda registry s3
       id: push-zip
       shell: bash
