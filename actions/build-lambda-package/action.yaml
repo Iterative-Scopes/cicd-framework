@@ -23,7 +23,7 @@ runs:
     steps: 
     - name: Get given application settings
       id: app_settings
-      uses: Iterative-Scopes/cicd-framework/actions/cicdcfg@isops-620
+      uses: Iterative-Scopes/cicd-framework/actions/cicdcfg@main
       with:
         env: ${{ inputs.env }}
         role: build
@@ -49,7 +49,7 @@ runs:
     - name: Build Lambda zip
       id: build-zip
       if: contains(${{ steps.app_settings.outputs.app_registry}}, "s3:::")
-      uses: Iterative-Scopes/cicd-framework/actions/build-lambda-zip@isops-620
+      uses: Iterative-Scopes/cicd-framework/actions/build-lambda-zip@main
       with:
         repository: ${{ steps.app_settings.outputs.app_repository }}
         registry: ${{ steps.app_settings.outputs.app_registry }}
