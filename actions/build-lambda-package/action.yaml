@@ -8,6 +8,10 @@ inputs:
   profile:
     description: ci/cd profile 
     required: true
+  make-directory:
+    description: directory of makefile
+    required: false
+    default: $GITHUB_WORKSPACE
 
 outputs:
   package_ref:
@@ -47,8 +51,10 @@ runs:
       if: contains(${{ steps.app_settings.outputs.app_registry}}, "s3:::")
       uses: Iterative-Scopes/cicd-framework/actions/build-lambda-zip@main
       with:
-        registry: ${{ steps.app_settings.outputs.app_registry }}
         repository: ${{ steps.app_settings.outputs.app_repository }}
+        registry: ${{ steps.app_settings.outputs.app_registry }}
+        env: ${{ inputs.env }}
+        make-directory: ${{ inputs. make-directory }}
 
     - name: Set package ref
       id: set-pkg-ref

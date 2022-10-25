@@ -2,12 +2,19 @@ name: build lambda package
 description: build lambda package, return zip uri
 
 inputs:
-  registry:
-    description: s3 bucket name as lambda zip registry 
+  env:
+    description: environment to push package
     required: true
-  repository:
-    description: name of package
+  registry: 
+    description: "s3 bucket or ecr registry URI"
     required: true
+  repository: 
+    description: "app or service name"
+    required: true
+  make-directory:
+    description: directory of makefile
+    required: false
+    default: $GITHUB_WORKSPACE
 
 outputs:
   zip_uri:
@@ -23,11 +30,11 @@ runs:
       shell: bash
       run: |
         echo "build zip..."
-        make build
-
+        make -C ${{ inputs.make-directory }} build
     - name: Push to lambda registry s3
       id: push-zip
       shell: bash
       run: |
         echo "push zip..."
-        echo "::set-output name=zip_uri::s3://${{ inputs.s3 }}/${{ inputs.repository }}"
+        aws s3 cp ${{ inputs.repository }}.zip ${{ inputs.registry }}/${{ inputs.env }}/${{ inputs.repository }}.zip
+        echo "::set-output name=zip_uri::${{ inputs.registry }}/${{ inputs.env }}"

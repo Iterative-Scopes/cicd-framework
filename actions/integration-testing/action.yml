@@ -8,6 +8,10 @@ inputs:
   profile:
     description: cicd profile
     required: true
+  make-directory:
+    description: directory of makefile
+    required: false
+    default: $GITHUB_WORKSPACE
 
 runs:
   using: "composite"
@@ -24,4 +28,4 @@ runs:
       shell: bash
       run: |
         echo "run integration testing"
-        make integrationtest
+        make -C ${{ inputs.make-directory }} integrationtest

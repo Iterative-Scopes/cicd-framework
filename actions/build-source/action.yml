@@ -8,6 +8,10 @@ inputs:
   version:
     description: runtime version
     required: true
+  make-directory:
+    description: directory of makefile
+    required: false
+    default: $GITHUB_WORKSPACE
   
 runs:
   using: "composite"
@@ -37,15 +41,15 @@ runs:
     # Create Virtual Environment    
     - name: Create virtual env
       shell: bash
-      run: make venv
+      run: make -C ${{ inputs.make-directory }} venv
 
     # Check source code for programmatic and stylistic errors
     - name: Linting
       shell: bash
-      run: make lint
+      run: make -C ${{ inputs.make-directory }} lint
     
     # Build package to be pushed to package registry
     - name: Build Package
       shell: bash
-      run: make build
+      run: make -C ${{ inputs.make-directory }} build
   
