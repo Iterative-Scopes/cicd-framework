@@ -66,5 +66,13 @@ runs:
         shell: bash
         run: |
           echo "update lambda with [${{ inputs.package_ref }}]"
-          aws lambda update-function-code --dry-run --function-name  ${{ steps.app_settings.outputs.app_repository}}-${{ inputs.env }}-lookup_patient_data --s3-bucket dev-is-phi-infrastructure --s3-key serverless/dev/${{ steps.app_settings.outputs.app_repository}}.zip 
+          if [ ${{ steps.app_settings.outputs.app_repository }} == "air-video-patients-export" ];
+          then
+            aws lambda update-function-code --dry-run --function-name  air-video-patients-export-${{ inputs.env }}-export --s3-bucket is-lambda-artifacts --s3-key ${{ inputs.env }}/${{ steps.app_settings.outputs.app_repository}}.zip
+          fi;
+
+          if [ ${{ steps.app_settings.outputs.app_repository }} == "file_metadata_scrubber" ];
+          then
+            aws lambda update-function-code --dry-run --function-name  file-metadata-scrubber-${{ inputs.env }}-get_info --s3-bucket is-lambda-artifacts --s3-key ${{ inputs.env }}/${{ steps.app_settings.outputs.app_repository}}.zip
+          fi; 
           exit 0
