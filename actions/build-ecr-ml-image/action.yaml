@@ -1,41 +1,72 @@
-name: build ecr image
-description: build a container image and push to ecr, return image tag
+# makefile 
+name: build and ml image and/or push to ecr 
+description: build and/or push a ML container image(s)
 
 inputs:
-  aws_region:
-    description: aws region
+  env:
+    description: environment running on workflow
     required: true
-  repository:
-    description: aws ecr repository
+  profile:
+    description: yaml config file 
     required: true
-  make_cmd: 
-    description: make command
-    default: container
-    required: false
+  build: 
+    description: build and test flag with YES or NO
+    required: true
+  push:
+    description: push to ECR flag with YES or NO
+    required: true
 
 outputs:
   tag:
     description: image tag
     value: ${{ steps.ecr-image.outputs.tag }}
 
-# assume caller has connect to AWS account
 runs:
     using: "composite"
     steps:
+      - name: Build and container image(s) with unit testing
+        id: build_images
+        if: ${{ inputs.build == 'YES' }}
+        shell: bash
+        run: |
+          make containerbuild remotereg="$REMOTE_REGISTRY" tag="$IMAGE_TAG"
+          make containertest
+
+      - name: Get given environment AWS settings
+        id: aws_settings
+        if: ${{ inputs.push == 'YES' }}
+        uses: Iterative-Scopes/cicd-framework/actions/cicdcfg@main
+        with:
+          env: ${{ inputs.env }}
+          role: build
+          profile: ${{ inputs.profile }}
+
+      - name: Configure AWS credentials
+        id: aws-configure
+        if: ${{ inputs.push == 'YES' }}
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          role-to-assume: arn:aws:iam::${{ steps.aws_settings.outputs.aws_account }}:role/${{ steps.aws_settings.outputs.aws_role }}
+          role-duration-seconds: ${{ steps.aws_settings.outputs.aws_role_duration }}
+          aws-region: ${{ steps.aws_settings.outputs.aws_region }}
+          audience: ${{ steps.aws_settings.outputs.aws_audience }}
+
       - name: Login to Amazon ECR
         id: login-ecr
+        if: ${{ inputs.push == 'YES' }}
         uses: aws-actions/amazon-ecr-login@v1
         env: 
-          AWS_REGION: ${{ inputs.aws_region }}
+          AWS_REGION: ${{ steps.aws_settings.outputs.aws_region }}
 
-      - name: Build,Tag, and push image to Amazon ECR
+      - name: Tag and push image(s) to Amazon ECR
         id: ecr-image
+        if: ${{ inputs.push == 'YES' }}
         env:
-          REMOTE_REGISTRY: ${{ steps.login-ecr.outputs.registry }}/${{ inputs.repository }}
+          REMOTE_REGISTRY: ${{ steps.login-ecr.outputs.registry }}/${{ steps.aws_settings.outputs.app_repository}}
           IMAGE_TAG: ${{ github.ref_name }}
         shell: bash
         run: |
-          make ${{ inputs.make_cmd }} remotereg="$REMOTE_REGISTRY" tag="$IMAGE_TAG"
-          make ${{ inputs.make_cmd }}test
-          make ${{ inputs.make_cmd }}publish remotereg="$REMOTE_REGISTRY" tag="$IMAGE_TAG"
+          make containerpublish remotereg="$REMOTE_REGISTRY" tag="$IMAGE_TAG"
+          echo "set output tag ["$IMAGE_TAG"]"
+          echo "::set-output name=tag::"$IMAGE_TAG""
           
