@@ -1,0 +1,14 @@
+# This file is the sharable action with build,unittest, integration test, code coverage reports.
+# The sharable action can be used across applications by referring this action in the github workflow. 
+
+name: Setup serverless environment
+description: Setup serverless environment
+
+runs:
+  using: "composite"
+  steps:   
+    - name: Install serverless
+      shell: bash
+      run: |
+        npm install -g serverless@2
+        sls --version
