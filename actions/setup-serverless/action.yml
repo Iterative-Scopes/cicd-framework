@@ -10,5 +10,5 @@ runs:
     - name: Install serverless
       shell: bash
       run: |
-        npm install -g serverless@2
-        sls --version
+        npm install -g serverless@3.24.1
+        serverless --version

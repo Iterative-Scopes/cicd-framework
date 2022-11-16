@@ -12,6 +12,10 @@ inputs:
     description: lambda package ref from lambda build job
     required: true
     default: "null"
+  make-directory:
+    description: directory of makefile
+    required: false
+    default: $GITHUB_WORKSPACE
 
 runs:
     using: "composite"
@@ -43,36 +47,27 @@ runs:
           aws-region: ${{ steps.app_settings.outputs.aws_region }}
           audience: ${{ steps.app_settings.outputs.aws_audience }}
 
-      - name: Update container lambda - get image uri with given image tag
+      # - name: Update container lambda - get image uri with given image tag
+      #   if: ${{ steps.app_settings.outputs.app_registry == 'ecr' }}
+      #   uses: Iterative-Scopes/cicd-framework/actions/get-ecr-image-uri@main
+      #   id: get-image-uri
+      #   with: 
+      #     aws_region: ${{ steps.app_settings.outputs.aws_region }}
+      #     repository: ${{ steps.app_settings.outputs.app_repository }}
+      #     image_tag: ${{ inputs.package_ref }} 
+
+      # - name: Update container lambda - update lambda with image uri
+      #   if: ${{ steps.app_settings.outputs.app_registry == 'ecr' && 
+      #         steps.get-image-uri.outputs.uri }}
+      #   shell: bash
+      #   run: |
+      #     echo ${{ steps.get-image-uri.outputs.uri }}
+      #     aws lambda update-function-code --function-name ${{ env.LAMBDA_NAME }} --image-uri ${{ steps.get-image-uri.outputs.uri }}
+      #     exit 0
+          
+      - name: Deploy lambda
+        #if: contains(${{ steps.app_settings.outputs.app_registry}}, "s3:::")
         if: ${{ steps.app_settings.outputs.app_registry == 'ecr' }}
-        uses: Iterative-Scopes/cicd-framework/actions/get-ecr-image-uri@main
-        id: get-image-uri
-        with: 
-          aws_region: ${{ steps.app_settings.outputs.aws_region }}
-          repository: ${{ steps.app_settings.outputs.app_repository }}
-          image_tag: ${{ inputs.package_ref }} 
-
-      - name: Update container lambda - update lambda with image uri
-        if: ${{ steps.app_settings.outputs.app_registry == 'ecr' && 
-              steps.get-image-uri.outputs.uri }}
         shell: bash
         run: |
-          echo ${{ steps.get-image-uri.outputs.uri }}
-          aws lambda update-function-code --function-name ${{ env.LAMBDA_NAME }} --image-uri ${{ steps.get-image-uri.outputs.uri }}
-          exit 0
-  
-      - name: Update lambda from S3 registry
-        if: contains(${{ steps.app_settings.outputs.app_registry}}, "s3:::")
-        shell: bash
-        run: |
-          echo "update lambda with [${{ inputs.package_ref }}]"
-          if [ ${{ steps.app_settings.outputs.app_repository }} == "air-video-patients-export" ];
-          then
-            aws lambda update-function-code --dry-run --function-name  air-video-patients-export-${{ inputs.env }}-export --s3-bucket is-lambda-artifacts --s3-key ${{ inputs.env }}/${{ steps.app_settings.outputs.app_repository}}.zip
-          fi;
-
-          if [ ${{ steps.app_settings.outputs.app_repository }} == "file_metadata_scrubber" ];
-          then
-            aws lambda update-function-code --dry-run --function-name  file-metadata-scrubber-${{ inputs.env }}-get_info --s3-bucket is-lambda-artifacts --s3-key ${{ inputs.env }}/${{ steps.app_settings.outputs.app_repository}}.zip
-          fi; 
-          exit 0
+          make -C ${{ inputs.make-directory }} deploy stage="dev"
