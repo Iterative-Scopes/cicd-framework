@@ -8,10 +8,10 @@ load CI/CD pipeline profile for given environment settings
 - check in package file in the folder **dist**
 
 ## usage 
-- `cicdcfg --env dev --role build --profile full-path`
+- `cicdcfg --env dev --role build --profile full-path --outfile $GITHUBOUT`
 
 ## test on repo
-- `cicdcfg --env dev --role build --profile $PWD/.cicd-profile.yml`
+- `cicdcfg --env dev --role build --profile $PWD/.cicd-profile.yml` 
 - check outputs 
 
 ## Semantic Versioning

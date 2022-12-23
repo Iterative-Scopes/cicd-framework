@@ -63,4 +63,5 @@ runs:
       shell: bash
       run: |
         cicdcfg --env ${{ inputs.env }} --role ${{ inputs.role }} --profile ${{ inputs.profile }} --outfile $GITHUB_OUTPUT
-     
+        cat $GITHUB_OUTPUT
+        
