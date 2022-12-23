@@ -11,7 +11,7 @@ jobs:
 
       - name: test 
         id: unittest
-        uses: Iterative-Scopes/cicd-framework/actions/cicdcfg@ISOPS-705-ml
+        uses: Iterative-Scopes/cicd-framework/actions/cicdcfg@main
         with:
           env: dev
           role: test
