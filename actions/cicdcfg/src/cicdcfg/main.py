@@ -27,7 +27,7 @@ def get_settings(env, role, profile, outfile):
             file.write(f"aws_role_duration={cfg['role'][role]['duration']}\n")
             file.write(f"app_name={cfg['application']['name']}\n")
             file.write(f"app_registry={cfg['application']['package']['registry']}\n")
-            file.write(f"pp_repository={cfg['application']['package']['repository']}\n")
+            file.write(f"app_repository={cfg['application']['package']['repository']}\n")
             file.write(f"app_runtime={cfg['application']['runtime']['name']}\n")
             file.write(f"app_runtime_version={cfg['application']['runtime']['version']}\n")
 
