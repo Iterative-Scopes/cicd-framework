@@ -56,11 +56,11 @@ runs:
     - name: install yamcfg 
       shell: bash
       run: |
-         pip install "${{ github.action_path }}/dist/cicdcfg-0.2.0.tar.gz"
+         pip install "${{ github.action_path }}/dist/cicdcfg-0.3.0.tar.gz"
 
     - name: get CI/CD environment settings
       id: get-settings
       shell: bash
       run: |
-        cicdcfg --env ${{ inputs.env }} --role ${{ inputs.role }} --profile ${{ inputs.profile }}
+        cicdcfg --env ${{ inputs.env }} --role ${{ inputs.role }} --profile ${{ inputs.profile }} --outfile $GITHUB_OUTPUT
      

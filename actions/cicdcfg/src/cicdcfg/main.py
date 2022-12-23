@@ -2,13 +2,14 @@ import yaml
 import argparse
 
 
-def get_settings(env, role, profile):
+def get_settings(env, role, profile, outfile):
 
     # validate args
     if (env is None or env == "" or
         role is None or role == "" or
-        profile is None or profile == ""):
-        print("Missing one of inputs, env, role or config file")
+        profile is None or profile == "" or
+        outfile is None or outfile == ""):
+        print("Missing one of inputs, env, role, config out file")
         return 1
  
     try:
@@ -18,16 +19,17 @@ def get_settings(env, role, profile):
         print(f"Error in opening config file [{e}]")
         return 2
     try:
-        print(f"::set-output name=aws_account::{cfg['aws'][env]['account']}")
-        print(f"::set-output name=aws_region::{cfg['aws'][env]['region']}")
-        print(f"::set-output name=aws_audience::{cfg['aws'][env]['audience']}")
-        print(f"::set-output name=aws_role::{cfg['role'][role]['name']}")
-        print(f"::set-output name=aws_role_duration::{cfg['role'][role]['duration']}")
-        print(f"::set-output name=app_name::{cfg['application']['name']}")
-        print(f"::set-output name=app_registry::{cfg['application']['package']['registry']}")
-        print(f"::set-output name=app_repository::{cfg['application']['package']['repository']}")
-        print(f"::set-output name=app_runtime::{cfg['application']['runtime']['name']}")
-        print(f"::set-output name=app_runtime_version::{cfg['application']['runtime']['version']}")
+        with open(outfile, 'a') as file:
+            file.write(f"aws_account={cfg['aws'][env]['account']}\n")
+            file.write(f"aws_region={cfg['aws'][env]['region']}\n")
+            file.write(f"aws_audience={cfg['aws'][env]['audience']}\n")
+            file.write(f"aws_role={cfg['role'][role]['name']}\n")
+            file.write(f"aws_role_duration={cfg['role'][role]['duration']}\n")
+            file.write(f"app_name={cfg['application']['name']}\n")
+            file.write(f"app_registry={cfg['application']['package']['registry']}\n")
+            file.write(f"pp_repository={cfg['application']['package']['repository']}\n")
+            file.write(f"app_runtime={cfg['application']['runtime']['name']}\n")
+            file.write(f"app_runtime_version={cfg['application']['runtime']['version']}\n")
 
     except KeyError as e:
         print(f"Incorrect key value [{e}]")
@@ -41,10 +43,11 @@ def cli():
     parser.add_argument('--env', help='IS environment')
     parser.add_argument('--role', help='aws role')
     parser.add_argument('--profile', help='cicd configuration')
+    parser.add_argument('--outfile', help='output file')
 
     args = vars(parser.parse_args())
 
-    get_settings(args['env'], args['role'], args['profile'])
+    get_settings(args['env'], args['role'], args['profile'], args['outfile'])
 
 
 if __name__ == "__main__":
