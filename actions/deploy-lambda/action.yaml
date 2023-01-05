@@ -46,28 +46,9 @@ runs:
           role-duration-seconds: ${{ steps.app_settings.outputs.aws_role_duration }}
           aws-region: ${{ steps.app_settings.outputs.aws_region }}
           audience: ${{ steps.app_settings.outputs.aws_audience }}
-
-      # - name: Update container lambda - get image uri with given image tag
-      #   if: ${{ steps.app_settings.outputs.app_registry == 'ecr' }}
-      #   uses: Iterative-Scopes/cicd-framework/actions/get-ecr-image-uri@main
-      #   id: get-image-uri
-      #   with: 
-      #     aws_region: ${{ steps.app_settings.outputs.aws_region }}
-      #     repository: ${{ steps.app_settings.outputs.app_repository }}
-      #     image_tag: ${{ inputs.package_ref }} 
-
-      # - name: Update container lambda - update lambda with image uri
-      #   if: ${{ steps.app_settings.outputs.app_registry == 'ecr' && 
-      #         steps.get-image-uri.outputs.uri }}
-      #   shell: bash
-      #   run: |
-      #     echo ${{ steps.get-image-uri.outputs.uri }}
-      #     aws lambda update-function-code --function-name ${{ env.LAMBDA_NAME }} --image-uri ${{ steps.get-image-uri.outputs.uri }}
-      #     exit 0
           
       - name: Deploy lambda
-        #if: contains(${{ steps.app_settings.outputs.app_registry}}, "s3:::")
         if: ${{ steps.app_settings.outputs.app_registry == 'ecr' }}
         shell: bash
         run: |
-          make -C ${{ inputs.make-directory }} deploy stage="dev"
+          make -C ${{ inputs.make-directory }} deploy stage="dev" tag="${{ inputs.package_ref }}"

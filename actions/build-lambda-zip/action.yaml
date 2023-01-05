@@ -34,6 +34,7 @@ runs:
       run: |
         echo "build zip..."
         make -C ${{ inputs.make-directory }} build
+    # TODO: Will delete this step in next PR.
     - name: Push to lambda registry s3
       id: push-zip
       shell: bash
