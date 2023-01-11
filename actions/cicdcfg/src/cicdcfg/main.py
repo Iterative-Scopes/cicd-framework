@@ -26,6 +26,9 @@ def get_settings(env, role, profile, outfile):
             file.write(f"aws_role={cfg['role'][role]['name']}\n")
             file.write(f"aws_role_duration={cfg['role'][role]['duration']}\n")
             file.write(f"app_name={cfg['application']['name']}\n")
+            deployer = cfg["application"]["deployer"] if "deployer" in cfg["application"] else "none"
+            print(f"Debug-Here->> [{deployer}]")
+            file.write(f"app_deployer={deployer}\n")
             file.write(f"app_registry={cfg['application']['package']['registry']}\n")
             file.write(f"app_repository={cfg['application']['package']['repository']}\n")
             file.write(f"app_runtime={cfg['application']['runtime']['name']}\n")

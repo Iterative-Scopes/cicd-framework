@@ -1,0 +1,63 @@
+name: build ecr image
+description: build a container image and push to ecr, return image tag
+
+# src_env: dev
+# dst_env: ${{ env.PROMO_ENV }}
+# src_profile: ${{ inputs.profile }}
+# dst_profile: ${{ inputs.profile }}
+# package_ref: ${{ github.sha }}
+
+inputs:
+  src_env:
+    description: ecr source environment
+    required: true
+  dst_env:
+    description: ecr destination environment
+    required: true
+  profile:
+    description: cicd profle
+    required: true
+  package_ref:
+    description: container image tag to copy
+    required: true
+
+
+outputs:
+  tag:
+    description: image tag
+    value: ${{ steps.erc-image.outputs.tag }}
+
+# assume caller has connect to AWS account
+runs:
+    using: "composite"
+    steps:
+      - name: Get given application settings for source env
+        id: app_settings
+        uses: Iterative-Scopes/cicd-framework/actions/cicdcfg@feature/air-191
+        with:
+          env: ${{ inputs.src_env }}
+          role: deploy
+          profile: ${{ inputs.profile }}
+      - name: Configure AWS credentials
+        id: aws-configure
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          role-to-assume: arn:aws:iam::${{ steps.app_settings.outputs.aws_account }}:role/${{ steps.app_settings.outputs.aws_role }}
+          role-duration-seconds: ${{ steps.app_settings.outputs.aws_role_duration }}
+          aws-region: ${{ steps.app_settings.outputs.aws_region }}
+          audience: ${{ steps.app_settings.outputs.aws_audience }}    
+      - name: Login to Amazon ECR
+        id: login-ecr
+        uses: aws-actions/amazon-ecr-login@v1
+        env: 
+          AWS_REGION: ${{ steps.app_settings.outputs.aws_region }}
+    
+      - name: Pull image from ECR
+        id: pull-erc-image
+        env:
+          REMOTE_REGISTRY: ${{ steps.app_settings.outputs.aws_account }}.dkr.ecr.${{ steps.app_settings.outputs.aws_region }}.amazonaws.com/${{ steps.app_settings.outputs.app_repository }}
+          IMAGE_TAG: ${{ github.sha }}
+        shell: bash
+        run: |
+          echo "Pulling image $REMOTE_REGISTRY:$IMAGE_TAG"
+          docker pull $REMOTE_REGISTRY:$IMAGE_TAG

@@ -34,17 +34,12 @@ runs:
         uses: aws-actions/amazon-ecr-login@v1
         env: 
           AWS_REGION: ${{ inputs.aws_region }}
-
-      - name: Get current date
-        id: date
-        shell: bash
-        run: echo "::set-output name=date::$(date +'%Y-%m-%d-%H-%M')"
     
       - name: Build, tag, and push image to Amazon ECR
         id: erc-image
         env:
           REMOTE_REGISTRY: ${{ inputs.aws_account_id }}.dkr.ecr.${{ inputs.aws_region }}.amazonaws.com/${{ inputs.repository }}
-          IMAGE_TAG: ${{ steps.date.outputs.date }}
+          IMAGE_TAG: ${{ github.sha }}
         shell: bash
         run: |
           echo "image tag [$IMAGE_TAG]"

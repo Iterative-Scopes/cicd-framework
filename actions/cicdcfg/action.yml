@@ -31,6 +31,9 @@ outputs:
   app_name: 
     description: "app or service name"
     value: ${{ steps.get-settings.outputs.app_name }}
+  app_deployer:
+    description: "application deployer (Default: none)"
+    value: ${{ steps.get-settings.outputs.app_deployer }}
   app_registry: 
     description: "app or service name"
     value: ${{ steps.get-settings.outputs.app_registry }}

@@ -22,7 +22,7 @@ runs:
     steps: 
       - name: Get given application settings
         id: app_settings
-        uses: Iterative-Scopes/cicd-framework/actions/cicdcfg@main
+        uses: Iterative-Scopes/cicd-framework/actions/cicdcfg@feature/air-191
         with:
           env: ${{ inputs.env }}
           role: deploy
@@ -32,7 +32,7 @@ runs:
         shell: bash
         run: |
           echo LAMBDA_NAME=${{ inputs.env }}-${{ steps.app_settings.outputs.app_name }} >> $GITHUB_ENV
-          if [ $LAMBDA_NAME == "null" || ${{ inputs.package_ref }} == "null" ]; 
+          if [[ $LAMBDA_NAME == "null" || ${{ inputs.package_ref }} == "null" ]]; 
           then
             echo "Missing package ref [${{ inputs.package_ref }}] or lambda name: [$LAMBDA_NAME]";
             exit 128;
@@ -46,9 +46,38 @@ runs:
           role-duration-seconds: ${{ steps.app_settings.outputs.aws_role_duration }}
           aws-region: ${{ steps.app_settings.outputs.aws_region }}
           audience: ${{ steps.app_settings.outputs.aws_audience }}
+
+      - name: Update container lambda - get image uri with given image tag
+        if: ${{ steps.app_settings.outputs.app_registry == 'ecr' &&
+                steps.app_settings.outputs.app_deployer != 'sls' }}
+        uses: Iterative-Scopes/cicd-framework/actions/get-ecr-image-uri@main
+        id: get-image-uri
+        with:
+          aws_region: ${{ steps.app_settings.outputs.aws_region }}
+          repository: ${{ steps.app_settings.outputs.app_repository }}
+          image_tag: ${{ inputs.package_ref }}
+
+      - name: Update container lambda - update lambda with image uri
+        if: ${{ steps.app_settings.outputs.app_registry == 'ecr' &&
+                steps.get-image-uri.outputs.uri &&
+                steps.app_settings.outputs.app_deployer != 'sls' }}
+        shell: bash
+        run: |
+          echo ${{ steps.get-image-uri.outputs.uri }}
+          aws lambda update-function-code --function-name ${{ env.LAMBDA_NAME }} --image-uri ${{ steps.get-image-uri.outputs.uri }}
+          exit 0
+
+      - name: Update lambda from S3 registry
+        if: ${{ startsWith(steps.app_settings.outputs.app_registry, 's3:') &&
+                steps.app_settings.outputs.app_deployer != 'sls' }}
+        shell: bash
+        run: |
+          echo "update lambda with [${{ inputs.package_ref }}]"
+          aws lambda update-function-code --dry-run --function-name  ${{ steps.app_settings.outputs.app_repository}}-${{ inputs.env }}-lookup_patient_data --s3-bucket dev-is-phi-infrastructure --s3-key serverless/dev/${{ steps.app_settings.outputs.app_repository}}.zip
+          exit 0
           
       - name: Deploy lambda
-        if: ${{ steps.app_settings.outputs.app_registry == 'ecr' }}
+        if: ${{ steps.app_settings.outputs.app_deployer == 'sls' }}
         shell: bash
         run: |
           make -C ${{ inputs.make-directory }} deploy stage="dev" tag="${{ inputs.package_ref }}"
