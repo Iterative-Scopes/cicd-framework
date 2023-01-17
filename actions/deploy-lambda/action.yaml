@@ -80,4 +80,4 @@ runs:
         if: ${{ steps.app_settings.outputs.app_deployer == 'sls' }}
         shell: bash
         run: |
-          make -C ${{ inputs.make-directory }} deploy stage="dev" tag="${{ inputs.package_ref }}"
+          make -C ${{ inputs.make-directory }} deploy stage="${{ inputs.env }}" tag="${{ inputs.package_ref }}"
