@@ -12,6 +12,9 @@ inputs:
     description: directory of makefile
     required: false
     default: $GITHUB_WORKSPACE
+  aws_account_id:
+    description: aws account id
+    required: true
 
 outputs:
   package_ref:
@@ -41,15 +44,17 @@ runs:
     - name: Build Lambda container
       id: build-ecr
       if: ${{ steps.app_settings.outputs.app_registry == 'ecr' }}
-      uses: Iterative-Scopes/cicd-framework/actions/build-ecr-image@main
+      uses: Iterative-Scopes/cicd-framework/actions/build-ecr-image@feature/air-191
       with:
         aws_region: ${{ steps.app_settings.outputs.aws_region }}
+        aws_account_id: ${{ steps.app_settings.outputs.aws_account }}
         repository: ${{ steps.app_settings.outputs.app_repository }}
+        make-directory: ${{ inputs. make-directory }}
 
     - name: Build Lambda zip
       id: build-zip
       if: contains(${{ steps.app_settings.outputs.app_registry}}, "s3:::")
-      uses: Iterative-Scopes/cicd-framework/actions/build-lambda-zip@main
+      uses: Iterative-Scopes/cicd-framework/actions/build-lambda-zip@feature/air-191
       with:
         repository: ${{ steps.app_settings.outputs.app_repository }}
         registry: ${{ steps.app_settings.outputs.app_registry }}

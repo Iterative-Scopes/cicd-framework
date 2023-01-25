@@ -1,0 +1,99 @@
+name: copy ecr image
+description: copy a container image from source env to destination env
+
+inputs:
+  src_env:
+    description: ecr source environment
+    required: true
+  dst_env:
+    description: ecr destination environment
+    required: true
+  profile:
+    description: cicd profle
+    required: true
+  package_ref:
+    description: container image tag to copy
+    required: true
+
+
+outputs:
+  tag:
+    description: image tag
+    value: ${{ steps.erc-image.outputs.tag }}
+
+# assume caller has connect to AWS account
+runs:
+    using: "composite"
+    steps:
+      - name: Get given application settings for ${{ inputs.src_env }} env
+        id: app_settings_src
+        uses: Iterative-Scopes/cicd-framework/actions/cicdcfg@feature/air-191
+        with:
+          env: ${{ inputs.src_env }}
+          role: deploy
+          profile: ${{ inputs.profile }}
+
+      - name: Configure AWS credentials
+        id: aws_configure_src
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          role-to-assume: arn:aws:iam::${{ steps.app_settings_src.outputs.aws_account }}:role/${{ steps.app_settings_src.outputs.aws_role }}
+          role-duration-seconds: ${{ steps.app_settings_src.outputs.aws_role_duration }}
+          aws-region: ${{ steps.app_settings_src.outputs.aws_region }}
+          audience: ${{ steps.app_settings_src.outputs.aws_audience }} 
+      
+      - name: Get triggering commit sha
+        id: get_commit_sha
+        uses: Iterative-Scopes/cicd-framework/actions/get-commit-sha@feature/air-191   
+      
+      - name: Login to Amazon ECR (${{ inputs.src_env }})
+        id: login_ecr_src
+        uses: aws-actions/amazon-ecr-login@v1
+        env: 
+          AWS_REGION: ${{ steps.app_settings_src.outputs.aws_region }}
+    
+      - name: Pull image from ECR (${{ inputs.src_env }})
+        id: pull_erc_image
+        env:
+          REMOTE_REGISTRY: ${{ steps.app_settings_src.outputs.aws_account }}.dkr.ecr.${{ steps.app_settings_src.outputs.aws_region }}.amazonaws.com/${{ steps.app_settings_src.outputs.app_repository }}
+          IMAGE_TAG: ${{ steps.get_commit_sha.outputs.sha }}
+        shell: bash
+        run: |
+          echo "Pulling image $REMOTE_REGISTRY:$IMAGE_TAG"
+          docker pull $REMOTE_REGISTRY:$IMAGE_TAG
+          echo "::set-output name=src_registry::"$REMOTE_REGISTRY""
+
+      - name: Get given application settings for ${{ inputs.dst_env }} env
+        id: app_settings_dst
+        uses: Iterative-Scopes/cicd-framework/actions/cicdcfg@feature/air-191
+        with:
+          env: ${{ inputs.dst_env }}
+          role: deploy
+          profile: ${{ inputs.profile }}
+
+      - name: Configure AWS credentials
+        id: aws_configure_dst
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          role-to-assume: arn:aws:iam::${{ steps.app_settings_dst.outputs.aws_account }}:role/${{ steps.app_settings_dst.outputs.aws_role }}
+          role-duration-seconds: ${{ steps.app_settings_dst.outputs.aws_role_duration }}
+          aws-region: ${{ steps.app_settings_dst.outputs.aws_region }}
+          audience: ${{ steps.app_settings_dst.outputs.aws_audience }} 
+      
+      - name: Login to Amazon ECR (${{ inputs.dst_env }})
+        id: login_ecr_dst
+        uses: aws-actions/amazon-ecr-login@v1
+        env: 
+          AWS_REGION: ${{ steps.app_settings_dst.outputs.aws_region }}
+    
+      - name: Push image to ECR (${{ inputs.dst_env }})
+        id: push_erc_image
+        env:
+          SRC_REGISTRY: ${{ steps.pull_erc_image.outputs.src_registry }}
+          REMOTE_REGISTRY: ${{ steps.app_settings_dst.outputs.aws_account }}.dkr.ecr.${{ steps.app_settings_dst.outputs.aws_region }}.amazonaws.com/${{ steps.app_settings_dst.outputs.app_repository }}
+          IMAGE_TAG: ${{ steps.get_commit_sha.outputs.sha }}
+        shell: bash
+        run: |
+          echo "Pushing image to $REMOTE_REGISTRY:$IMAGE_TAG"
+          docker tag $SRC_REGISTRY:$IMAGE_TAG $REMOTE_REGISTRY:$IMAGE_TAG
+          docker push $REMOTE_REGISTRY:$IMAGE_TAG

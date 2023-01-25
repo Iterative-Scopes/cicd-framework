@@ -11,6 +11,9 @@ inputs:
   repository: 
     description: "app or service name"
     required: true
+  aws_account_id:
+    description: aws account id
+    required: true
   make-directory:
     description: directory of makefile
     required: false
@@ -31,10 +34,11 @@ runs:
       run: |
         echo "build zip..."
         make -C ${{ inputs.make-directory }} build
+    # TODO: Will delete this step in next PR.
     - name: Push to lambda registry s3
       id: push-zip
       shell: bash
       run: |
         echo "push zip..."
-        aws s3 cp ${{ inputs.repository }}.zip ${{ inputs.registry }}/${{ inputs.env }}/${{ inputs.repository }}.zip
+        # aws s3 cp ${{ inputs.repository }}.zip ${{ inputs.registry }}/${{ inputs.env }}/${{ inputs.repository }}.zip
         echo "::set-output name=zip_uri::${{ inputs.registry }}/${{ inputs.env }}"

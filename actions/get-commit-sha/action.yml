@@ -1,0 +1,23 @@
+name: fetch triggering commit sha
+description: fetch triggering commit sha
+
+outputs:
+  sha:
+    description: commit sha
+    value: ${{ steps.commit_sha.outputs.sha }}
+
+# assume caller has connect to AWS account
+runs:
+    using: "composite"
+    steps:     
+      - name: Get commit sha
+        id: commit_sha
+        shell: bash
+        run: |
+          if [ "$GITHUB_EVENT_NAME" == "pull_request" ]; then
+            COMMIT_SHA=$(cat $GITHUB_EVENT_PATH | jq -r .pull_request.head.sha)
+          else
+            COMMIT_SHA=${{ github.sha }} 
+          fi
+          echo "set output sha ["$COMMIT_SHA"]"
+          echo "::set-output name=sha::"$COMMIT_SHA""

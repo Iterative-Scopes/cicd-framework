@@ -5,6 +5,9 @@ inputs:
   aws_region:
     description: aws region
     required: true
+  aws_account_id:
+    description: aws account id
+    required: true
   repository:
     description: aws ecr repository
     required: true
@@ -12,6 +15,10 @@ inputs:
     description: make command
     default: container
     required: true
+  make-directory:
+    description: directory of makefile
+    required: false
+    default: $GITHUB_WORKSPACE
 
 outputs:
   tag:
@@ -27,17 +34,20 @@ runs:
         uses: aws-actions/amazon-ecr-login@v1
         env: 
           AWS_REGION: ${{ inputs.aws_region }}
+      
+      - name: Get triggering commit sha
+        id: get_commit_sha
+        uses: Iterative-Scopes/cicd-framework/actions/get-commit-sha@feature/air-191
     
       - name: Build, tag, and push image to Amazon ECR
         id: erc-image
         env:
-          REMOTE_REGISTRY: ${{ steps.login-ecr.outputs.registry }}/${{ inputs.repository }}
-          IMAGE_TAG: ${{ github.ref_name }}
+          REMOTE_REGISTRY: ${{ inputs.aws_account_id }}.dkr.ecr.${{ inputs.aws_region }}.amazonaws.com/${{ inputs.repository }}
+          IMAGE_TAG: ${{ steps.get_commit_sha.outputs.sha }}
         shell: bash
         run: |
           echo "image tag [$IMAGE_TAG]"
-          make ${{ inputs.make_cmd }} remotereg="$REMOTE_REGISTRY" tag="$IMAGE_TAG"
-          make ${{ inputs.make_cmd }}test
+          make -C ${{ inputs.make-directory }} ${{ inputs.make_cmd }} remotereg="$REMOTE_REGISTRY" tag="$IMAGE_TAG"
           docker push $REMOTE_REGISTRY:$IMAGE_TAG
           echo "set output tag ["$IMAGE_TAG"]"
           echo "::set-output name=tag::"$IMAGE_TAG""
